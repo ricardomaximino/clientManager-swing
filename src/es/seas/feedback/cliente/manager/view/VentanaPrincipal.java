@@ -8,8 +8,6 @@ package es.seas.feedback.cliente.manager.view;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import es.seas.feedback.cliente.manager.control.PersonaControl;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 

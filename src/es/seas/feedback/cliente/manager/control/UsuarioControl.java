@@ -17,7 +17,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import es.seas.feedback.cliente.manager.model.service.ServicioPersona;
 import es.seas.feedback.cliente.manager.view.ListaPersona;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;

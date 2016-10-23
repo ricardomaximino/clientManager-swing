@@ -38,7 +38,6 @@ public class ClienteControl implements PersonaControl<Cliente> {
     private final ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
     
     private ServicioPersona<Cliente> servicio;
-    private BuscarCliente buscarCliente;
     private Controlable principal;
     private final Map<Cliente, JInternalFrame> frames;
     private Map<String,Provincia> provincias;
@@ -233,10 +232,8 @@ public class ClienteControl implements PersonaControl<Cliente> {
      */
     @Override
     public void crearFrameBuscar() {
-        if (buscarCliente == null) {
-            buscarCliente = new BuscarCliente(null, true, personaUtilidades);
-            buscarCliente.setControl(this);
-        }
+        BuscarCliente buscarCliente = new BuscarCliente(null, true, personaUtilidades);
+        buscarCliente.setControl(this);
         buscarCliente.setLocation(60, 60);
         buscarCliente.clear();
         buscarCliente.setVisible(true);

@@ -13,6 +13,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.swing.DefaultComboBoxModel;
@@ -34,6 +35,7 @@ public class PersonaUtilidades {
         setArrays();
     }
     public void refresh(){
+        view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view",Locale.getDefault());
         setArrays();
     }
     private void setArrays(){
