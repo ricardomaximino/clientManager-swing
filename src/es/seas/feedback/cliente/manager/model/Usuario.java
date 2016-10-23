@@ -21,8 +21,8 @@ import javax.persistence.Table;
 @Table(name="Usuarios")
 public class Usuario extends Persona{
     private String contraseña;
-    @Column(name="controle")
-    private int level;
+    @Column(name="controle" ,nullable = false)
+    private int level=0;
 
     public String getContraseña() {
         return contraseña;

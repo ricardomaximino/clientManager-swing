@@ -49,7 +49,7 @@ public class ClienteManager {
     private void setLookAndFeel() {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                System.out.println(info.getName());
+            
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
@@ -101,7 +101,6 @@ public class ClienteManager {
 
         //Controlable
         Controlable principal = new VentanaPrincipal();
-        principal.setClienteManager(this);
         //Controlable
 
         //ClienteControl
@@ -117,27 +116,33 @@ public class ClienteManager {
         ((JFrame) principal).setExtendedState(JFrame.MAXIMIZED_BOTH);
         ((JFrame) principal).setVisible(true);
     }
+    public static void main(String[] args) {
+        ClienteManager cm = new ClienteManager();
+        cm.bootClienteManager();
+    }
 
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         Thread base = new Thread() {
             public void run() {
-
+                int i =0;
                 ClienteManager manager = new ClienteManager();
                 while (manager.getInteger() < 10) {
-                    System.out.println("");
                     if (manager.getInteger() == 0) {
                         manager.plus();
                         Thread main = new Thread() {@Override public void run() { manager.bootClienteManager();}};
                         main.start();
+                    }else{
+                         System.out.print(i);
                     }
                     if (manager.getInteger() == 2) {
-                        //clean up the resources
+                        System.out.println(manager.getInteger());
                         manager.setInteger(0);
                     }
+                    i++;
                 }
                 System.exit(0);
             }
         };
         base.start();
-    }
+    }*/
 }

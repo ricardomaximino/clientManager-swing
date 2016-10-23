@@ -33,6 +33,9 @@ public class PersonaUtilidades {
     public PersonaUtilidades(){
         setArrays();
     }
+    public void refresh(){
+        setArrays();
+    }
     private void setArrays(){
         titulosTablaDePersonas = new String[9];
         titulosTablaDePersonas[0]= view.getString("tableColumn_ID2");
@@ -79,6 +82,23 @@ public class PersonaUtilidades {
     }
     public String[] getMesesDelAño(){
         return mesesDelAño;
+    }
+    /**
+     * Retorna una String con los meses del año separado por coma en el idioma seleccionado como default.
+     * @return Retorna una String con los meses del año.
+     * 
+     * Este metodo simplesmente crea un StringBuilder y dentro de un For que
+     * utiliza la variable privada mesesDelAño de la class PersonaUtilidades para añadir los meses
+     * en el StringBuilder y al final retorna el toString del StringBuilder.
+     */
+    public String getMesesDelAñoAsString(){
+        StringBuilder sb = new StringBuilder();
+        for(String s : mesesDelAño){
+            System.out.println(s);
+            sb.append(s);
+            sb.append(", ");
+        }
+        return sb.toString().substring(0,sb.toString().lastIndexOf(","));
     }
     // ControlCliente y ControlUsuario
     public  TableColumnModel configurarAnchoDeLasColumnas(TableColumnModel columnModel){
@@ -182,5 +202,10 @@ public class PersonaUtilidades {
             }
             cmbLocalidade.setModel(localidade);
         }
+    }
+    public static void main(String[] args) {
+        PersonaUtilidades u = new PersonaUtilidades();
+        for(String s : u.getMesesDelAño())
+        System.out.println(s);
     }
 }

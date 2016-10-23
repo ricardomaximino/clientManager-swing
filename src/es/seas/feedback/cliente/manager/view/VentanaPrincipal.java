@@ -5,13 +5,13 @@
  */
 package es.seas.feedback.cliente.manager.view;
 
-import es.seas.feedback.cliente.manager.ClienteManager;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import es.seas.feedback.cliente.manager.control.PersonaControl;
-import java.awt.Image;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import javax.swing.ImageIcon;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -20,7 +20,6 @@ import javax.swing.ImageIcon;
 public class VentanaPrincipal extends javax.swing.JFrame implements Controlable {
     private int x = 0;
     private int y = 0;
-    private ClienteManager clienteManager;
     private PersonaControl clienteControl;
     private PersonaControl usuarioControl;
 
@@ -88,10 +87,35 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
     public PersonaControl getUsuarioControl(){
         return usuarioControl;
     }
-
-    @Override
-    public void setClienteManager(ClienteManager clienteManager) {
-        this.clienteManager = clienteManager;
+    
+    private void reset(){
+        for(JInternalFrame f: desktopPane.getAllFrames()){
+            f.dispose();
+        }
+        restartXY();
+        clienteControl.getPersonaUtilidades().refresh();
+        ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+        //Cliente
+        menuCliente.setText(view.getString("menu_Client"));
+        menuItemBuscarCliente.setText(view.getString("menuItem_SearchClient"));
+        menuItemListarTodosCliente.setText(view.getString("menuItem_ListAll"));
+        menuItemNuevoCliente.setText(view.getString("menuItem_NewClient"));
+        //Ventanas
+        menuVentanas.setText(view.getString("menu_Windows"));
+        menuItemCerrar.setText(view.getString("menuItem_Close"));
+        menuItemCerrarTodo.setText(view.getString("menuItem_CloseAll"));
+        menuItemCascada.setText(view.getString("menuItem_Waterfall"));
+        //Usuario
+        menuUsuario.setText(view.getString("menu_User"));
+        menuItemBuscarUsuario.setText(view.getString("menuItem_SearchUser"));
+        menuItemListarTodosUsuario.setText(view.getString("menuItem_ListAll"));
+        menuItemNuevoUsuario.setText(view.getString("menuItem_NewUser"));
+        //Lenguas
+        menuLengua.setText(view.getString("menu_Languages"));
+        menuItemCastellano.setText(view.getString("menuItem_Spanish"));
+        menuItemIngles.setText(view.getString("menuItem_English"));
+        menuItemPortugues.setText(view.getString("menuItem_Portugues"));
+        
     }
 
     /**
@@ -173,7 +197,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
 
         menuVentanas.setText(bundle.getString("menu_Windows")); // NOI18N
 
-        menuItemCerrar.setText(bundle.getString("menuItem_close")); // NOI18N
+        menuItemCerrar.setText(bundle.getString("menuItem_Close")); // NOI18N
         menuItemCerrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuItemCerrarActionPerformed(evt);
@@ -236,7 +260,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
 
         menuLengua.setText(bundle.getString("menu_Languages")); // NOI18N
 
-        menuItemCastellano.setText(bundle.getString("menuItem_Castellano")); // NOI18N
+        menuItemCastellano.setText(bundle.getString("menuItem_Spanish")); // NOI18N
         menuItemCastellano.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuItemCastellanoActionPerformed(evt);
@@ -322,20 +346,17 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
 
     private void menuItemCastellanoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCastellanoActionPerformed
         Locale.setDefault(new Locale("es"));
-        clienteManager.setInteger(2);
-        this.dispose();
+        reset();
     }//GEN-LAST:event_menuItemCastellanoActionPerformed
 
     private void menuItemInglesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemInglesActionPerformed
         Locale.setDefault(Locale.ENGLISH);
-        clienteManager.setInteger(2);
-        this.dispose();
+        reset();
     }//GEN-LAST:event_menuItemInglesActionPerformed
 
     private void menuItemPortuguesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemPortuguesActionPerformed
         Locale.setDefault(new Locale("pt"));
-        clienteManager.setInteger(2);
-        this.dispose();
+        reset();
     }//GEN-LAST:event_menuItemPortuguesActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

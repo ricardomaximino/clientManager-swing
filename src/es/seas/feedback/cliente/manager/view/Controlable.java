@@ -19,5 +19,4 @@ public interface Controlable {
     void showInternalFrame(JInternalFrame frame);
     void setClienteControl(PersonaControl control);
     void setUsuarioControl(PersonaControl control);
-    void setClienteManager(ClienteManager clienteManager);
 }

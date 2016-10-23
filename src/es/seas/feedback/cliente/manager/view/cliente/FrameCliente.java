@@ -601,6 +601,11 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    @Override
+    public void dispose(){
+        control.closeFrame(this);
+        super.dispose();     
+    }
     private void txtNombreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyPressed
         if (evt.getKeyCode() == 10) {
             txtPrimerApellido.requestFocus();
@@ -695,37 +700,44 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         try {
             Cliente cliente = getCliente();
             if (control.guardar(cliente)) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(view.getString("message_Registry"));
-                sb.append(cliente.getNombre());
-                sb.append(" ");
-                sb.append(cliente.getPrimerApellido());
-                sb.append(" ");
-                sb.append(cliente.getSegundoApellido());
-                sb.append(view.getString("message_was_saved_successfully"));
-                JOptionPane.showMessageDialog(null, sb.toString());
-                control.closeFrame(this);
+                JOptionPane.showMessageDialog(null, msgClienteGuardado(cliente));   
                 this.dispose();
             }
         } catch (DateTimeException ex) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(cmbDia.getSelectedItem());
-            sb.append(" ");
-            sb.append(view.getString("message_of"));
-            sb.append(" ");
-            sb.append(cmbMes.getSelectedItem());
-            sb.append(" ");
-            sb.append(view.getString("message_of"));
-            sb.append(" ");
-            sb.append(cmbAño.getSelectedItem());
-            sb.append(", ");
-            sb.append(view.getString("message_is_not_a_valid_date"));
-            sb.append(".");
-
-            JOptionPane.showMessageDialog(this, sb);
+            JOptionPane.showMessageDialog(this, msgErrorDeFecha());
             cmbDia.requestFocus();
         }
     }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private String msgClienteGuardado(Cliente cliente) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(view.getString("message_Registry"));
+        sb.append(cliente.getNombre());
+        sb.append(" ");
+        sb.append(cliente.getPrimerApellido());
+        sb.append(" ");
+        sb.append(cliente.getSegundoApellido());
+        sb.append(" ");
+        sb.append(view.getString("message_was_saved_successfully"));
+        return sb.toString();
+    }
+
+    private String msgErrorDeFecha() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cmbDia.getSelectedItem());
+        sb.append(" ");
+        sb.append(view.getString("message_of"));
+        sb.append(" ");
+        sb.append(cmbMes.getSelectedItem());
+        sb.append(" ");
+        sb.append(view.getString("message_of"));
+        sb.append(" ");
+        sb.append(cmbAño.getSelectedItem());
+        sb.append(", ");
+        sb.append(view.getString("message_is_not_a_valid_date"));
+        sb.append(".");
+        return sb.toString();
+    }
 
     private void cmbDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDiaActionPerformed
 
@@ -744,7 +756,6 @@ public class FrameCliente extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chkActivoKeyPressed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        control.closeFrame(this);
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -754,7 +765,6 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         if (respuesta == 0) {
             if (control.getServicio().borrarRegistro(cliente)) {
                 JOptionPane.showMessageDialog(this, cliente + view.getString("message_was_delete_from_the_database"));
-                control.closeFrame(this);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, cliente + view.getString("message_could_not_be_delete_try_later"));

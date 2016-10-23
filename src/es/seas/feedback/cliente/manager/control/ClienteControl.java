@@ -23,7 +23,6 @@ import es.seas.feedback.cliente.manager.model.service.ServicioPersona;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
 import es.seas.feedback.cliente.manager.view.ListaPersona;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -37,16 +36,11 @@ public class ClienteControl implements PersonaControl<Cliente> {
 
     //?? --- Internacionalization
     private final ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
-    private final String NUEVO_CLIENTE = view.getString("message_REGISTRING_NEW_CLIENT");
-    private final String TABLA_DESACTUALIZADA = view.getString("message_CLIENT_TABLE_IS_NOT_UPDATE");
-    private final String BUSQUEDA_NO_IMPLEMENTADA = view.getString("message_THIS_KIND_OF_SEARCH_IS_NOT_IMPLEMENTED");
-    private final String ATUALIZANDO_CLIENTE = view.getString("message_UPDATING_CLIENT");
-    private String MESES_DEL_AÑO;
     
     private ServicioPersona<Cliente> servicio;
     private BuscarCliente buscarCliente;
     private Controlable principal;
-    private Map<Cliente, JInternalFrame> frames;
+    private final Map<Cliente, JInternalFrame> frames;
     private Map<String,Provincia> provincias;
     private PersonaUtilidades personaUtilidades;
 
@@ -98,12 +92,6 @@ public class ClienteControl implements PersonaControl<Cliente> {
     @Override
     public void setPersonaUtilidades(PersonaUtilidades personaUtilidades){
         this.personaUtilidades = personaUtilidades;
-        StringBuilder sb = new StringBuilder();
-        for(String s : personaUtilidades.getMesesDelAño()){
-            sb.append(sb);
-            sb.append(", ");
-        }
-        MESES_DEL_AÑO=view.getString("message_THE_MONTHS_OF_THE_YEAR_ARE") + sb.toString().substring(0,sb.toString().lastIndexOf(","));
     }
     
     @Override
@@ -160,7 +148,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
     y un boolean(indicando si desea que el botón que permite borrar cliente sea visible o no*/
     @Override
     public void crearFrameAñadir() {
-        principal.showInternalFrame(crearFrameCliente(NUEVO_CLIENTE, null, false));
+        principal.showInternalFrame(crearFrameCliente(view.getString("message_REGISTRING_NEW_CLIENT"), null, false));
         
     }
 
@@ -193,7 +181,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
                 principal.getDesktopPane().getDesktopManager().activateFrame(frame);
                 principal.getDesktopPane().setSelectedFrame(frame);
             } else {
-                StringBuilder titulo = new StringBuilder(ATUALIZANDO_CLIENTE);
+                StringBuilder titulo = new StringBuilder(view.getString("message_UPDATING_CLIENT"));
                 titulo.append(cliente.getNombre());
                 titulo.append(" ");
                 titulo.append(cliente.getPrimerApellido());
@@ -204,8 +192,11 @@ public class ClienteControl implements PersonaControl<Cliente> {
                 frames.put(cliente, frame);
             }
         } else {
-            JOptionPane.showMessageDialog(null, TABLA_DESACTUALIZADA);
+            JOptionPane.showMessageDialog(null, view.getString("message_CLIENT_TABLE_IS_NOT_UPDATE"));
         }
+    }
+    public Map<Cliente,JInternalFrame> getFrames(){
+        return frames;
     }
 
     /*El metodo closeFrame comprueba si el frame pasado por parametro es una intancia
@@ -266,7 +257,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
             case 0:
                 Cliente cli = servicio.buscarRegistroPorNIF(valorDelCampo);
                 if (cli != null) {
-                    principal.showInternalFrame(this.crearFrameCliente(ATUALIZANDO_CLIENTE, cli, true));
+                    principal.showInternalFrame(this.crearFrameCliente(view.getString("message_UPDATING_CLIENT"), cli, true));
                 } else {
                     JOptionPane.showMessageDialog(null, view.getString("message_NO_REGISTRY_FOUND_ID_THIS_ID") + valorDelCampo.toUpperCase());
                 }
@@ -291,13 +282,17 @@ public class ClienteControl implements PersonaControl<Cliente> {
                 if (month != null) {
                     crearFrameListaCliente(servicio.cumpleañerosDelMes(month),view.getString("message_SEARCHING_BIRTHDAY_OF_THE_MONTH") + valorDelCampo.toUpperCase());
                 } else {
-                    JOptionPane.showMessageDialog(null, MESES_DEL_AÑO);
+                    JOptionPane.showMessageDialog(null, personaUtilidades.getMesesDelAñoAsString());
                 }
                 break;
             default:
-                JOptionPane.showMessageDialog(null, BUSQUEDA_NO_IMPLEMENTADA);
+                JOptionPane.showMessageDialog(null, view.getString("message_THIS_KIND_OF_SEARCH_IS_NOT_IMPLEMENTED"));
                 break;
         }
+    }
+    public static void main(String[] args) {
+        ClienteControl c = new ClienteControl(null, null, null);
+        c.setPersonaUtilidades(new PersonaUtilidades());
     }
 }
 

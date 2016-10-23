@@ -28,12 +28,11 @@ import javax.xml.bind.ValidationException;
  */
 public class FrameUsuario extends javax.swing.JInternalFrame {
 
-    private final String[] mesNombres;
     private UsuarioControl control;
     private Map<String, Provincia> provincias;
     private Usuario usuario;
     private PersonaUtilidades personaUtilidades;
-    private ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+    private final ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
 
     /**
      * Creates new form Cliente
@@ -44,7 +43,6 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
     public FrameUsuario(Map<String, Provincia> prov, PersonaUtilidades personaUtilidades) {
         initComponents();
         this.personaUtilidades = personaUtilidades;
-        mesNombres = personaUtilidades.getMesesDelAño();
         provincias = prov;
         initCombos();
     }
@@ -69,6 +67,16 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         this.provincias = prov;
     }
 
+    public PersonaUtilidades getPersonaUtilidades() {
+        return personaUtilidades;
+    }
+
+    public void setPersonaUtilidades(PersonaUtilidades personaUtilidades) {
+        this.personaUtilidades = personaUtilidades;
+    }
+
+    
+    
     public void setUsuario(Usuario usu) {
         if (usu != null) {
             this.usuario = usu;
@@ -78,7 +86,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
             txtSegundoApellido.setText(usu.getSegundoApellido());
 
             cmbDia.setSelectedItem("" + usu.getFechaNacimiento().getDayOfMonth());
-            cmbMes.setSelectedItem(mesNombres[usu.getFechaNacimiento().getMonth().getValue() - 1]);
+            cmbMes.setSelectedItem(personaUtilidades.getMesesDelAño()[usu.getFechaNacimiento().getMonth().getValue() - 1]);
             cmbAño.setSelectedItem("" + usu.getFechaNacimiento().getYear());
 
             chkActivo.setSelected(usu.isActivo());
@@ -150,16 +158,6 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         btnBorrarCliente.setVisible(visible);
     }
 
-    private void initCombos() {
-        personaUtilidades.setComboDia(cmbDia);
-        personaUtilidades.setComboMes(cmbMes);
-        personaUtilidades.setComboAño(80, 33, cmbAño);
-
-        personaUtilidades.setComboProvincia(provincias, "Alicante", cmbProvincia);
-        String prov = cmbProvincia.getSelectedItem().toString();
-        personaUtilidades.setComboLocalidade(provincias, prov, "Santa Pola", cmbLocalidade);
-    }
-
     public JTextField getTxtRepiteContraseña() {
         return txtRepitaContraseña;
     }
@@ -168,6 +166,22 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         return sprPoderDeAcceso;
     }
 
+    @Override
+    public void dispose(){
+        control.closeFrame(this);
+        super.dispose();
+    }
+    
+      private void initCombos() {
+        personaUtilidades.setComboDia(cmbDia);
+        personaUtilidades.setComboMes(cmbMes);
+        personaUtilidades.setComboAño(80, 33, cmbAño);
+
+        personaUtilidades.setComboProvincia(provincias, "Alicante", cmbProvincia);
+        String prov = cmbProvincia.getSelectedItem().toString();
+        personaUtilidades.setComboLocalidade(provincias, prov, "Santa Pola", cmbLocalidade);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -807,46 +821,50 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtAreaNotaKeyPressed
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        StringBuilder sbError = null;
-        StringBuilder sbConfirmacion = null;
         try {
-            Usuario usuario = getUsuario();
-            if (control.guardar(usuario)) {
-                sbConfirmacion = new StringBuilder();
-                sbConfirmacion.append(view.getString("message_Registry"));
-                sbConfirmacion.append(usuario.getNombre());
-                sbConfirmacion.append(" ");
-                sbConfirmacion.append(usuario.getPrimerApellido());
-                sbConfirmacion.append(" ");
-                sbConfirmacion.append(usuario.getSegundoApellido());
-                sbConfirmacion.append(view.getString("message_was_saved_successfully"));
-                control.closeFrame(this);
-                this.dispose();
-            }
+            Usuario usu = getUsuario();
+            if (control.guardar(usu)) {
+                JOptionPane.showMessageDialog(this, msgUsuarioGuardado(usu));
+                this.dispose();           
+            }          
         } catch (DateTimeException ex) {
-            sbError = new StringBuilder();
-            sbError.append(cmbDia.getSelectedItem());
-            sbError.append(" ");
-            sbError.append(view.getString("message_of"));
-            sbError.append(" ");
-            sbError.append(cmbMes.getSelectedItem());
-            sbError.append(" ");
-            sbError.append(view.getString("message_of"));
-            sbError.append(" ");
-            sbError.append(cmbAño.getSelectedItem());
-            sbError.append(view.getString("message_is_not_a_valid_date"));
+            JOptionPane.showMessageDialog(this, msgErrorDeFecha());
             cmbDia.requestFocus();
         }catch (ValidationException ex){
-            
-        }finally{
-            if(sbError != null){
-                JOptionPane.showMessageDialog(this, sbError);
-            }else{
-                JOptionPane.showMessageDialog(this, sbConfirmacion.toString());
-            }
+            JOptionPane.showMessageDialog(this, msgErrorDeFecha());
         }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
+        private String msgUsuarioGuardado(Usuario usuario) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(view.getString("message_Registry"));
+        sb.append(usuario.getNombre());
+        sb.append(" ");
+        sb.append(usuario.getPrimerApellido());
+        sb.append(" ");
+        sb.append(usuario.getSegundoApellido());
+        sb.append(" ");
+        sb.append(view.getString("message_was_saved_successfully"));
+        return sb.toString();
+    }
+
+    private String msgErrorDeFecha() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cmbDia.getSelectedItem());
+        sb.append(" ");
+        sb.append(view.getString("message_of"));
+        sb.append(" ");
+        sb.append(cmbMes.getSelectedItem());
+        sb.append(" ");
+        sb.append(view.getString("message_of"));
+        sb.append(" ");
+        sb.append(cmbAño.getSelectedItem());
+        sb.append(", ");
+        sb.append(view.getString("message_is_not_a_valid_date"));
+        sb.append(".");
+        return sb.toString();
+    }
+    
     private void cmbDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDiaActionPerformed
 
     }//GEN-LAST:event_cmbDiaActionPerformed
@@ -864,7 +882,6 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chkActivoKeyPressed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        control.closeFrame(this);
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -872,16 +889,24 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         int respuesta = JOptionPane.showConfirmDialog(this, view.getString("message_Are_you_sure_want_delete_this_registry"));
         try{
             if (respuesta == 0) {
-                Usuario usuario = getUsuario();
-                if (control.getServicio().borrarRegistro(usuario)) {
-                    JOptionPane.showMessageDialog(this, usuario + view.getString("message_was_delete_from_the_database"));
-                    control.closeFrame(this);
+                Usuario usu = getUsuario();
+                if (control.getServicio().borrarRegistro(usu)) {
+                    JOptionPane.showMessageDialog(this, usu + view.getString("message_was_delete_from_the_database"));
                     dispose();              
                 } else {
-                    JOptionPane.showMessageDialog(this, usuario + view.getString("message_could_not_be_delete_try_later"));
+                    JOptionPane.showMessageDialog(this, usu + view.getString("message_could_not_be_delete_try_later"));
                 }
             }
-        }catch(Exception ex){}
+        }catch(DateTimeException | ValidationException ex){
+            if( ex instanceof DateTimeException){
+                JOptionPane.showMessageDialog(this, msgErrorDeFecha());
+                cmbDia.requestFocus();
+            }
+            if(ex instanceof ValidationException){
+                JOptionPane.showMessageDialog(this, view.getString("message_The_fields_password_repitePassword_must_be_equals"));
+            }
+        
+        }
     }//GEN-LAST:event_btnBorrarClienteActionPerformed
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
