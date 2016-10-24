@@ -34,12 +34,7 @@ import java.util.ResourceBundle;
  */
 public class UsuarioControl implements PersonaControl<Usuario> {
 
-    private final ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
-    private final String NUEVO_USUARIO = view.getString("message_REGISTRING_NEW_USER");
-    private final String TABLA_DESACTUALIZADA = view.getString("message_USER_TABLE_IS_NOT_UPDATE");
-    private final String BUSQUEDA_NO_IMPLEMENTADA = view.getString("message_THIS_KIND_OF_SEARCH_IS_NOT_IMPLEMENTED");
-    private final String ATUALIZANDO_USUARIO = view.getString("message_UPDATING_USER");
-    private String MESES_DEL_AÑO;
+    private ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
     
     private ServicioPersona<Usuario> servicio;
     private BuscarUsuario buscarUsuario;
@@ -62,6 +57,10 @@ public class UsuarioControl implements PersonaControl<Usuario> {
         this.provincias = prov;
     }
 
+    @Override
+    public void refresh(){
+        view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+    }
     /*set VentanaPrincipal*/
     @Override
     public void setPrincipal(Controlable princip) {
@@ -100,12 +99,6 @@ public class UsuarioControl implements PersonaControl<Usuario> {
     @Override
     public void setPersonaUtilidades(PersonaUtilidades personaUtilidades){
         this.personaUtilidades = personaUtilidades;
-        StringBuilder sb = new StringBuilder();
-        for(String s : personaUtilidades.getMesesDelAño()){
-            sb.append(sb);
-            sb.append(", ");
-        }
-        MESES_DEL_AÑO=view.getString("message_THE_MONTHS_OF_THE_YEAR_ARE") + sb.toString().substring(0,sb.toString().lastIndexOf(","));
     }
     
     @Override
@@ -163,7 +156,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
     y un boolean(indicando si desea que el botón que permite borrar usuario sea visible o no*/
     @Override
     public void crearFrameAñadir() {
-        principal.showInternalFrame(crearFrameUsuario(NUEVO_USUARIO, null, false,true));
+        principal.showInternalFrame(crearFrameUsuario(view.getString("message_REGISTRING_NEW_USER"), null, false,true));
     }
 
     /*El metodo creaFrameAtualizar crea una variable del tipo Usuario,
@@ -195,7 +188,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
                 principal.getDesktopPane().getDesktopManager().activateFrame(frame);
                 principal.getDesktopPane().setSelectedFrame(frame);
             } else {
-                StringBuilder titulo = new StringBuilder(ATUALIZANDO_USUARIO);
+                StringBuilder titulo = new StringBuilder(view.getString("message_UPDATING_USER"));
                 titulo.append(usuario.getNombre());
                 titulo.append(" ");
                 titulo.append(usuario.getPrimerApellido());
@@ -206,7 +199,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
                 frames.put(usuario, frame);
             }
         } else {
-            JOptionPane.showMessageDialog(null, TABLA_DESACTUALIZADA);
+            JOptionPane.showMessageDialog(null, view.getString("message_USER_TABLE_IS_NOT_UPDATE"));
         }
     }
 
@@ -270,7 +263,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
             case 0:
                 Usuario usu = servicio.buscarRegistroPorNIF(valorDelCampo);
                 if (usu != null) {
-                    principal.showInternalFrame(this.crearFrameUsuario(ATUALIZANDO_USUARIO + usu.getNombre()+ " "+ usu.getPrimerApellido(), usu, true,false));
+                    principal.showInternalFrame(this.crearFrameUsuario(view.getString("message_UPDATING_USER") + usu.getNombre()+ " "+ usu.getPrimerApellido(), usu, true,false));
                 } else {
                     JOptionPane.showMessageDialog(null,view.getString("message_NO_REGISTRY_FOUND_ID_THIS_ID") + valorDelCampo.toUpperCase());
                 }
@@ -295,11 +288,11 @@ public class UsuarioControl implements PersonaControl<Usuario> {
                 if (month != null) {
                     crearFrameListaUsuario(servicio.cumpleañerosDelMes(month),view.getString("message_SEARCHING_BIRTHDAY_OF_THE_MONTH") + valorDelCampo.toUpperCase());
                 } else {
-                    JOptionPane.showMessageDialog(null, MESES_DEL_AÑO);
+                    JOptionPane.showMessageDialog(null, personaUtilidades.getMesesDelAñoAsString());
                 }
                 break;
             default:
-                JOptionPane.showMessageDialog(null, BUSQUEDA_NO_IMPLEMENTADA);
+                JOptionPane.showMessageDialog(null, view.getString("message_THIS_KIND_OF_SEARCH_IS_NOT_IMPLEMENTED"));
                 break;
         }
     }

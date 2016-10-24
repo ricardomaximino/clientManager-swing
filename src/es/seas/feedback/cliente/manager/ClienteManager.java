@@ -1,5 +1,5 @@
 /**
- * 
+ * Este es el paquete base de la aplicación.
  */
 package es.seas.feedback.cliente.manager;
 
@@ -26,30 +26,33 @@ import es.seas.feedback.cliente.manager.view.Controlable;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
 
 /**
+ * Esta es la class que lanza el la aplicacion.
  *
- * @author Ricardo
+ * @author Ricardo Maximino<br><br>
+ *
+ * Esta class tien dos metodos privados y un metodo publico. Los metodos
+ * privados ayudan configurar los objetos necesarios para configurar el Frame
+ * principal.
  */
 public class ClienteManager {
 
-    private Integer integer = 0;
     private Map<String, Provincia> mapProvincias;
 
-    public void setInteger(Integer integer) {
-        this.integer = integer;
+    /**
+     * Este contructor no lleva argumento y es el único constructor implementado. Realmente este constructor no hace nada más que instanciar la clase.
+     */
+    public ClienteManager() {
+        mapProvincias = null;
     }
 
-    public Integer getInteger() {
-        return integer;
-    }
-
-    public void plus() {
-        integer++;
-    }
-
+    /**
+     * Este metodo privados ententa configurar el LookAndFell de la aplicacion
+     * para Nimbus
+     */
     private void setLookAndFeel() {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-            
+
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
@@ -65,7 +68,17 @@ public class ClienteManager {
             java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
-    private void setProvincias(){
+
+    /**
+     * Este metodo privado crea una instancia del ProvinciaDAO y configura la
+     * variable global provincias, que es un Map<String,Provincia> con todas las
+     * provincias que están el la base de datos. En el caso de que la base de
+     * datos esté vazia, el metodo crea una instancia de la class
+     * LectorEscritor, la cual lee y registra todas las provincias y sus
+     * respectivas localidades el la base de datos y configura la variable
+     * provincias.
+     */
+    private void setProvincias() {
         //Provincias
         ProvinciaDAO provDAO = new ProvinciaDAOImpl();
         mapProvincias = new LinkedHashMap<>();
@@ -84,6 +97,24 @@ public class ClienteManager {
         //Provincias
     }
 
+    /**
+     * Este metodo configura el Frame principal que implementa la Interface
+     * Controlable y extende JFrame.<br>
+     * <p>
+     * Primeramente instancia todas las classes necesaria para configurar el
+     * frame principal, luego se configura todo y finalmente configura la
+     * propriedade visible para true.</p>
+     * <p>
+     * Este metodo llama los metodos privados setLookAndFeel() y setProvincias().<br>
+     * Las class que se instancia en este metodo son:</p>
+     * <ul>
+     * <li>PersonaUtilidades </li>
+     * <li>ServicioPersona(Cliente)</li>
+     * <li>ServicioPersona(Usuario)</li>
+     * <li>Controlable frame principal extende JFrame PersonaControl(Cliente)</li>
+     * <li>PersonaControl(Usuario)</li>
+     * </ul>
+     */
     public void bootClienteManager() {
         setLookAndFeel();
         setProvincias();
@@ -116,33 +147,13 @@ public class ClienteManager {
         ((JFrame) principal).setExtendedState(JFrame.MAXIMIZED_BOTH);
         ((JFrame) principal).setVisible(true);
     }
+
+    /**
+     * 
+     * @param args - el argumento del metodo main no esta configurado para modificar la manera que se lanza la aplicación.
+     */
     public static void main(String[] args) {
         ClienteManager cm = new ClienteManager();
         cm.bootClienteManager();
     }
-
-    /*public static void main(String args[]) {
-        Thread base = new Thread() {
-            public void run() {
-                int i =0;
-                ClienteManager manager = new ClienteManager();
-                while (manager.getInteger() < 10) {
-                    if (manager.getInteger() == 0) {
-                        manager.plus();
-                        Thread main = new Thread() {@Override public void run() { manager.bootClienteManager();}};
-                        main.start();
-                    }else{
-                         System.out.print(i);
-                    }
-                    if (manager.getInteger() == 2) {
-                        System.out.println(manager.getInteger());
-                        manager.setInteger(0);
-                    }
-                    i++;
-                }
-                System.exit(0);
-            }
-        };
-        base.start();
-    }*/
 }

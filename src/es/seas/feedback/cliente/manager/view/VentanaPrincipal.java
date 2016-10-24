@@ -91,6 +91,8 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
             f.dispose();
         }
         restartXY();
+        clienteControl.refresh();
+        usuarioControl.refresh();
         clienteControl.getPersonaUtilidades().refresh();
         ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
         //Cliente

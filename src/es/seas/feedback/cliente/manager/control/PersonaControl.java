@@ -32,5 +32,6 @@ public interface PersonaControl<T> {
     void crearFrameBuscar();
     void closeFrame(JInternalFrame frame);
     void buscar(String nombreDelCampo, String valorDelCampo);
+    void refresh();
     
 }

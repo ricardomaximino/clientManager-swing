@@ -25,11 +25,10 @@ import javax.swing.table.TableColumnModel;
  * @author Ricardo
  */
 public class PersonaUtilidades {
-    private String[] titulosTablaDePersonas;// tableColumn_Id= {"ID","NIF","NOMBRE","1º APELLIDO","2º APELLIDO","NACIMIENTO","ACTIVO","ALTA","ULTIMA BAJA"};
-    private String[] mesesDelAño;// = {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
+    private String[] titulosTablaDePersonas;
+    private String[] mesesDelAño;
     private String[] camposPersona;
     private ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
-    //TableModelCliente y TableModelUsuario
     
     public PersonaUtilidades(){
         setArrays();
@@ -204,10 +203,5 @@ public class PersonaUtilidades {
             }
             cmbLocalidade.setModel(localidade);
         }
-    }
-    public static void main(String[] args) {
-        PersonaUtilidades u = new PersonaUtilidades();
-        for(String s : u.getMesesDelAño())
-        System.out.println(s);
     }
 }
