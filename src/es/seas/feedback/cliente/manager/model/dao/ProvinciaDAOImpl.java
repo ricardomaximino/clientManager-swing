@@ -5,7 +5,7 @@
  */
 package es.seas.feedback.cliente.manager.model.dao;
 
-import com.mchange.util.AlreadyExistsException;
+import es.seas.feedback.cliente.manager.model.Localidade;
 import es.seas.feedback.cliente.manager.model.Provincia;
 import es.seas.feedback.cliente.manager.model.dao.hibernate.HibernateUtil;
 import java.util.List;
@@ -20,6 +20,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class ProvinciaDAOImpl implements ProvinciaDAO{
     
+    @Override
     public boolean guardarProvincia(Provincia provincia){
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
@@ -42,6 +43,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
         }
     }
     
+    @Override
     public Provincia getProvincia(String nombre){
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
@@ -60,7 +62,8 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
         }
     }
     
-    public List<Provincia> getList(){
+    @Override
+    public List<Provincia> getLista(){
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
         try {
@@ -74,5 +77,41 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
         } finally {
             session.close();
         }
+    }
+    public List<Provincia> getProvinciasQueContiene(String localidade){
+        List<Provincia> lista = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+        try{
+            Criteria criteria = session.createCriteria(Provincia.class);
+            criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+            for(Provincia pro : (List<Provincia>)criteria.list()){
+                System.out.println("Provincia: " + pro.getNombre());
+                for(Localidade loc : pro.getLocalidades()){
+                    System.out.println(loc.getNombre());
+                    if(loc.getNombre().toUpperCase() == localidade.toUpperCase()){
+                        System.out.println("Localidade: " + loc.getNombre()+ " SI.");
+                        lista.add(pro);
+                    }else{
+                        System.out.println("Localidade: " + loc.getNombre() + " NO.");
+                    }
+                }
+            }
+          
+            tx.commit();
+        }catch(Exception ex){
+            tx.rollback();
+            ex.printStackTrace();
+        }finally{
+            session.close();
+        }
+        return lista;
+    }
+    public static void main(String[] args) {
+        ProvinciaDAOImpl p = new ProvinciaDAOImpl();
+        for(Provincia pro : p.getProvinciasQueContiene("Santa Pola")){
+            System.out.println(pro.getNombre());
+        }
+        System.exit(0);
     }
 }

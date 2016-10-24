@@ -54,7 +54,7 @@ public class LectorEscritor {
         
         System.out.println("Leyendo y registrando localidades");
         //Localidades
-        for (Provincia provincia : dao.getList()) {
+        for (Provincia provincia : dao.getLista()) {
             //System.out.println(provincia.getNombre());
             try {
                 InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(new File(localidadesFile)),  "latin1"); 

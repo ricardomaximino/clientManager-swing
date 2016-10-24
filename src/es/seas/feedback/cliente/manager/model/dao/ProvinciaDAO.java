@@ -15,5 +15,5 @@ import java.util.List;
 public interface ProvinciaDAO {
     boolean guardarProvincia(Provincia provincia);
     Provincia getProvincia(String nombre);
-    List<Provincia> getList();
+    List<Provincia> getLista();
 }

@@ -82,15 +82,15 @@ public class ClienteManager {
         //Provincias
         ProvinciaDAO provDAO = new ProvinciaDAOImpl();
         mapProvincias = new LinkedHashMap<>();
-        List<Provincia> listProvincias = provDAO.getList();
+        List<Provincia> listProvincias = provDAO.getLista();
         if (listProvincias.size() > 0) {
-            for (Provincia prov : provDAO.getList()) {
+            for (Provincia prov : provDAO.getLista()) {
                 mapProvincias.put(prov.getNombre(), prov);
             }
         } else {
             LectorEscritor lectorEscritor = new LectorEscritor();
             lectorEscritor.leerProvinciasYLocalidades(null, null);
-            for (Provincia prov : provDAO.getList()) {
+            for (Provincia prov : provDAO.getLista()) {
                 mapProvincias.put(prov.getNombre(), prov);
             }
         }
