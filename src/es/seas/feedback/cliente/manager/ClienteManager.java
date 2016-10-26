@@ -1,6 +1,3 @@
-/**
- * Este es el paquete base de la aplicación.
- */
 package es.seas.feedback.cliente.manager;
 
 import es.seas.feedback.cliente.manager.control.ClienteControl;
@@ -30,16 +27,17 @@ import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
  *
  * @author Ricardo Maximino<br><br>
  *
- * Esta class tien dos metodos privados y un metodo publico. Los metodos
+ * <p>Esta class tien dos metodos privados y un metodo publico. Los metodos
  * privados ayudan configurar los objetos necesarios para configurar el Frame
- * principal.
+ * principal.</p>
  */
 public class ClienteManager {
 
     private Map<String, Provincia> mapProvincias;
 
     /**
-     * Este contructor no lleva argumento y es el único constructor implementado. Realmente este constructor no hace nada más que instanciar la clase.
+     * Este contructor no lleva argumento y es el único constructor implementado. 
+     * Realmente este constructor no hace nada más que instanciar la clase.
      */
     public ClienteManager() {
         mapProvincias = null;
@@ -70,13 +68,15 @@ public class ClienteManager {
     }
 
     /**
-     * Este metodo privado crea una instancia del ProvinciaDAO y configura la
-     * variable global provincias, que es un Map<String,Provincia> con todas las
+     * Este metodo configura una variable global provincias que es un Map&lt;String,Provincia&gt;.
+     * 
+     * <p>Este metodo privado crea una instancia del ProvinciaDAO y configura la
+     * variable global provincias, que es un Map&lt;String,Provincia&gt; con todas las
      * provincias que están el la base de datos. En el caso de que la base de
      * datos esté vazia, el metodo crea una instancia de la class
      * LectorEscritor, la cual lee y registra todas las provincias y sus
      * respectivas localidades el la base de datos y configura la variable
-     * provincias.
+     * provincias.</p>
      */
     private void setProvincias() {
         //Provincias
@@ -98,8 +98,8 @@ public class ClienteManager {
     }
 
     /**
-     * Este metodo configura el Frame principal que implementa la Interface
-     * Controlable y extende JFrame.<br>
+     * Este metodo configura el Frame principal(que implementa la Interface
+     * Controlable y extende JFrame).<br>
      * <p>
      * Primeramente instancia todas las classes necesaria para configurar el
      * frame principal, luego se configura todo y finalmente configura la
@@ -149,8 +149,12 @@ public class ClienteManager {
     }
 
     /**
+     * Este es el metodo main el metodo que lanza la aplicación.
      * 
+     * <p>Este metodo crea una instancia desta clase(ClienteManager) y llama
+     * el metodo bootClienteManager.</p>
      * @param args - el argumento del metodo main no esta configurado para modificar la manera que se lanza la aplicación.
+     * 
      */
     public static void main(String[] args) {
         ClienteManager cm = new ClienteManager();

@@ -8,6 +8,7 @@ package es.seas.feedback.cliente.manager.model.dao;
 import es.seas.feedback.cliente.manager.model.Localidade;
 import es.seas.feedback.cliente.manager.model.Provincia;
 import es.seas.feedback.cliente.manager.model.dao.hibernate.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -79,25 +80,21 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
         }
     }
     public List<Provincia> getProvinciasQueContiene(String localidade){
-        List<Provincia> lista = null;
+        List<Provincia> lista = new ArrayList<>();
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
         try{
             Criteria criteria = session.createCriteria(Provincia.class);
             criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             for(Provincia pro : (List<Provincia>)criteria.list()){
-                System.out.println("Provincia: " + pro.getNombre());
                 for(Localidade loc : pro.getLocalidades()){
-                    System.out.println(loc.getNombre());
-                    if(loc.getNombre().toUpperCase() == localidade.toUpperCase()){
-                        System.out.println("Localidade: " + loc.getNombre()+ " SI.");
+                    if(loc.getNombre().equals(localidade)){
+                        System.out.println("Provincia: " + pro.getNombre() + " Localidade: " + loc.getNombre());
                         lista.add(pro);
-                    }else{
-                        System.out.println("Localidade: " + loc.getNombre() + " NO.");
+                        break;
                     }
                 }
             }
-          
             tx.commit();
         }catch(Exception ex){
             tx.rollback();
@@ -106,12 +103,5 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
             session.close();
         }
         return lista;
-    }
-    public static void main(String[] args) {
-        ProvinciaDAOImpl p = new ProvinciaDAOImpl();
-        for(Provincia pro : p.getProvinciasQueContiene("Santa Pola")){
-            System.out.println(pro.getNombre());
-        }
-        System.exit(0);
     }
 }

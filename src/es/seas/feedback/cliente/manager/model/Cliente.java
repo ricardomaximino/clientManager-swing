@@ -4,19 +4,18 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- *
- * @author Ricardo Maximino
- * Ejercicio obligatório del curso java de SEAS año 2016.
- * La aplicación en general visa admintrar los datos de los clientes.
- * Aùn sendo el objetivo principal administrar los datos de los clientes, el
- * sistema dedica una gran parte de sus fucionalidades para los usuarios.
- * Lo desarollo del usuario es muy importante para la seguridad de los datos
- * de los clientes. Es un sistema también implementa internacionalization.
+ * Esta clase extende Persona y no añade nada diferente, esta clase es un POJO.
  * 
- * La class Cliente es simplesment la class contreta de la class abstrata Persona.
+ * @author Ricardo Maximino<br><br>
+ * 
+ * <p>Todos los metodos definidos en la clase abstrato Persona son las que se utiliza
+ * aqui sin tocar nada.</p>
+ * 
+ * @see Persona
+ * 
  */
 @Entity
-@Table(name="Cliente")
+@Table(name="Clientes")
 public class Cliente extends Persona {
     
 }

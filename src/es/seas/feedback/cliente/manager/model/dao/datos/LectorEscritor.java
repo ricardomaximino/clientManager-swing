@@ -39,7 +39,7 @@ public class LectorEscritor {
                 Provincia provincia = null;
                 while (line!= null){                 
                     //System.out.println(line[0] + " " + line[1]);
-                    provincia = new Provincia(line[1],Long.parseLong(line[0]));
+                    provincia = new Provincia(line[1].trim(),Long.parseLong(line[0]));
                     dao.guardarProvincia(provincia);                    
                     line = br.readLine().split(" ");
                 }
@@ -66,7 +66,7 @@ public class LectorEscritor {
                    // System.out.println(line[0] + " " +line[1]+ " "+line[2]);
                   
                     if(provincia.getId()== Long.parseLong(line[1].trim())){
-                        provincia.getLocalidades().add(new Localidade(line[2], provincia.getNombre()));
+                        provincia.getLocalidades().add(new Localidade(line[2].trim(), provincia.getNombre()));
                     }  
                     sline = br.readLine();
                 }

@@ -1,7 +1,3 @@
-/**
- * Este paque es donde están los controles y la interface Control la cual implementa
- * todos los controles.
- */
 package es.seas.feedback.cliente.manager.control;
 
 import es.seas.feedback.cliente.manager.model.Cliente;
@@ -38,9 +34,7 @@ import java.util.ResourceBundle;
  */
 public class ClienteControl implements PersonaControl<Cliente> {
 
-    //Internacionalization
     private ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
-
     private ServicioPersona<Cliente> servicio;
     private Controlable principal;
     private final Map<Cliente, JInternalFrame> frames;
@@ -53,10 +47,6 @@ public class ClienteControl implements PersonaControl<Cliente> {
      */
     public ClienteControl() {
         frames = new HashMap<>();
-        servicio = null;
-        principal = null;
-        provincias = null;
-
     }
 
     /**
@@ -177,22 +167,22 @@ public class ClienteControl implements PersonaControl<Cliente> {
     }
 
     /**
-     * El Metodo guardarCliente guarda as alteraciones y crea nuevos
+     * El Metodo guardar guarda as alteraciones y crea nuevos
      * registros.<br><br>
      *
      * @param cliente - Se espera la instancia de una clase Cliente.<br>
      * @return - Un valor del tipo boolean como confirmación que la acción haya
-     * si ejecutada correctamente.<br><br>
+     * sido ejecutada correctamente.<br><br>
      *
      * <p>
      * Primeramente este metodo chequea si hay algun cliente ya registrado con
      * el nif del cliente pasado como parametro.</p>
      * <p>
      * Si el resultado de esa busqueda sea null se llama el metodo del
-     * ServicioCliente registrarNuevoCliente.</p>
+     * ServicioCliente añadirNuevoRegistro.</p>
      * <p>
-     * Se el resultado de esa busqueda sea true se llama el metodo del
-     * ServicioCliente atualizarCliente.</p>
+     * Se el resultado de esa búsqueda sea true se llama el metodo del
+     * ServicioCliente atualizarRegistro.</p>
      */
     @Override
     public boolean guardar(Cliente cliente) {
@@ -206,48 +196,11 @@ public class ClienteControl implements PersonaControl<Cliente> {
     }
 
     /**
-     * El metodo crearFrameListarTodos crea un ListaPersona(esa class extends
-     * JIternalFrame).<br><br>
-     *
-     * @param list - Lista de Cliente del tipo List&lt;Cliente&gt; con los
-     * clientes que deven aparecer en la tabla.<br>
-     * @param titulo - Titulo del tipo String que será el titulo del frame
-     * creado en conjunto con la fecha y hora local.<br><br>
-     *
-     * Este metodo crea una instancia de la clase ListaPersona usando el
-     * contructor con un argumento:<br><br>
-     * <ul>
-     * <li>
-     * TableModelCliente - a su vez, para instanciar esta clase se utiliza el
-     * constructor con dos argumentos la lista de cliente y String[]
-     * titulosDeLaTabla.
-     * </li>
-     * </ul>
-     *
-     * Luego se configura el ColumnModel de la tabla utilizando el metodo
-     * configurarAnchoDeLasColumnas pasando como parametro el proprio
-     * columnModel de la tabla.<br>
-     * se configura el control de la clase ListaPersona y finalmente se llama el
-     * metodo showInternalFrame<br>
-     * de la class VentanaPrincipal(esa class implementa Controlable y deve
-     * extender JFrame)<br>
-     * y pasa la referencia de la clase ListaCliente ha sido creada.
-     */
-    private void crearFrameListaCliente(List<Cliente> list, String titulo) {
-        ListaPersona lista = new ListaPersona(new TableModelCliente(list, personaUtilidades.getTitulosTablasDePersonas()));
-        lista.setTitle(titulo + " - " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
-        lista.getTabla().setColumnModel(personaUtilidades.configurarAnchoDeLasColumnas(lista.getTabla().getColumnModel()));
-        lista.setControl(this);
-        principal.showInternalFrame(lista);
-    }
-
-    /**
-     * <p>
      * El metodo listarTodos crea un ListaCliente(esa class extends
      * JInternalFrame)<br>
      * usando el metodo privado crearFrameListaCliente y pasa como parametro
      * una<br>
-     * lista con todos los clientes llamando el metodo listarClientes de la
+     * lista con todos los clientes llamando el metodo listarRegistros de la
      * class ServicioCliente
      */
     @Override
@@ -256,7 +209,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
     }
 
     /**
-     * El metodo crearFrameNuevoCliente llama el metodo showInternalFrame de la
+     * El metodo crearFrameAñadir llama el metodo showInternalFrame de la
      * class <br>
      * VentanaPrincipal(esa clase implemtenta Controlable y deve extender
      * JFrame)y pasa <br>
@@ -285,8 +238,8 @@ public class ClienteControl implements PersonaControl<Cliente> {
      * en la tabla de la base de datos.</p>
      * <p>
      * El metodo creaFrameAtualizarCliente crea una variable del tipo Cliente,
-     * iguala esa variable con el retorno del metodo buscarCliente de la class
-     * ServicoClienteImpl(esa clase implementa ServicioCliente).</p>
+     * iguala esa variable con el retorno del metodo buscar de la class
+     * ServicoCliente(esa clase implementa ServicioPersona).</p>
      * <p>
      * Luego utiliza un if para comprobar si la variable cliente es != the null.
      * Si la variable sea != de null, entonces se crea una variable del Tipo
@@ -308,7 +261,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
      * exibirá el frame creado usando el metodo showInternalFrame de la class
      * VentanaPrincipal(esa class extends JFrame).</p>
      * <p>
-     * Si la variable set == null, entoces se exibirá un JOptionPane informando
+     * Si la variable cliente == null, entoces se exibirá un JOptionPane informando
      * que la tabla esta desactualizada.</p>
      */
     @Override
@@ -334,21 +287,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
             JOptionPane.showMessageDialog(null, view.getString("message_CLIENT_TABLE_IS_NOT_UPDATE"));
         }
     }
-
-    /**
-     * Este metodo retorna el contenido de la variable global frames.<br>
-     *
-     * @return - Un Map&lt;Cliente,JInternalFrame&gt;<br><br>
-     *
-     * <p>
-     * Este mapa es donde se almacenan los FramesCliente de Atualización, para
-     * que no permita que la aplicacion cree varios FramesCliente de
-     * Atualización del mismo cliente.</p>
-     */
-    public Map<Cliente, JInternalFrame> getFrames() {
-        return frames;
-    }
-
+    
     /**
      * Este metodo elimina, en caso de que exista una referencia del
      * JInternalFrame pasado como parametro.<br>
@@ -369,32 +308,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
     }
 
     /**
-     * El Metodo crearFrameCliente es un metodo private y retorna un
-     * JInternalFrame.<br><br>
-     *
-     * @param titulo - Titulo del frame que es del tipo String.<br>
-     * @param cliente - Cliente del tipo Cliente, al cual se desea atualizar o
-     * null en caso de nuevo cliente.<br>
-     * @param borrarVisible - un valor del tipo boolean para determinar se el
-     * botón borrar estará visible o no.<br><br>
-     *
-     * <p>
-     * Este metodo pide como parametro el titulo del frame, del tipo String,el
-     * cliente del tipo Cliente(lo cual puede ser null en caso de nuevo cliente)
-     * y un valor boolean que hará con que el botón para borrar cliente sea
-     * visible o no.</p>
-     */
-    private JInternalFrame crearFrameCliente(String titulo, Cliente cliente, boolean borrarVisible) {
-        FrameCliente frame = new FrameCliente(provincias, personaUtilidades);
-        frame.setTitle(titulo);
-        frame.setControl(this);
-        frame.borrarEsVisible(borrarVisible);
-        frame.setCliente(cliente);
-        return frame;
-    }
-
-    /**
-     * El metodo crearFrameBuscarCliente crea un BuscarCliente (esa clase
+     * El metodo crearFrameBuscar crea un BuscarCliente (esa clase
      * extende JDialog).<br><br>
      *
      *
@@ -418,13 +332,13 @@ public class ClienteControl implements PersonaControl<Cliente> {
 
     /**
      * El metodo buscar crea un FrameCliente cuando se busca por el nif y un
-     * ListaCliente para todos los demas tipo de búsqueda.<br><br>
+     * ListaPersona para todos los demas tipo de búsqueda.<br><br>
      *
-     * @param nombreDelCampo - nombreDelCampo(nombreDelCampo no se refiere a lo
+     * @param nombreDelCampo nombreDelCampo(nombreDelCampo no se refiere a lo
      * campos en la base de datos, si no, al JComboBox que<br>
      * contiene una lista de campos. Los cuales se producen en
      * PersonaUtilidades) lo cual será utilizado el un switch.<br>
-     * @param valorDelCampo - valorDelCampo, que será el valor utilizado para
+     * @param valorDelCampo valorDelCampo, que será el valor utilizado para
      * realizar la búsqueda.<br><br>
      *
      * <p>
@@ -475,4 +389,66 @@ public class ClienteControl implements PersonaControl<Cliente> {
                 break;
         }
     }
+    
+    /**
+     * El metodo crearFrameListarCliente crea un ListaPersona(esa class extends
+     * JIternalFrame).<br><br>
+     *
+     * @param list - Lista de Cliente del tipo List&lt;Cliente&gt; con los
+     * clientes que deven aparecer en la tabla.<br>
+     * @param titulo - Titulo del tipo String que será el titulo del frame
+     * creado en conjunto con la fecha y hora local.<br><br>
+     *
+     * Este metodo crea una instancia de la clase ListaPersona usando el
+     * contructor con un argumento:<br><br>
+     * <ul>
+     * <li>
+     * TableModelCliente - a su vez, para instanciar esta clase se utiliza el
+     * constructor con dos argumentos la lista de cliente y String[]
+     * titulosDeLaTabla.
+     * </li>
+     * </ul>
+     *
+     * Luego se configura el ColumnModel de la tabla utilizando el metodo
+     * configurarAnchoDeLasColumnas pasando como parametro el proprio
+     * columnModel de la tabla.<br>
+     * se configura el control de la clase ListaPersona y finalmente se llama el
+     * metodo showInternalFrame<br>
+     * de la class VentanaPrincipal(esa class implementa Controlable y deve
+     * extender JFrame)<br>
+     * y pasa la referencia de la clase ListaPersona que ha sido creada.
+     */
+    private void crearFrameListaCliente(List<Cliente> list, String titulo) {
+        ListaPersona lista = new ListaPersona(new TableModelCliente(list, personaUtilidades.getTitulosTablasDePersonas()));
+        lista.setTitle(titulo + " - " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
+        lista.getTabla().setColumnModel(personaUtilidades.configurarAnchoDeLasColumnas(lista.getTabla().getColumnModel()));
+        lista.setControl(this);
+        principal.showInternalFrame(lista);
+    }
+    
+    /**
+     * El Metodo crearFrameCliente es un metodo private y retorna un
+     * JInternalFrame.<br><br>
+     *
+     * @param titulo - Titulo del frame que es del tipo String.<br>
+     * @param cliente - Cliente del tipo Cliente, al cual se desea atualizar o
+     * null en caso de nuevo cliente.<br>
+     * @param borrarVisible - un valor del tipo boolean para determinar se el
+     * botón borrar estará visible o no.<br><br>
+     *
+     * <p>
+     * Este metodo pide como parametro el titulo del frame, del tipo String,el
+     * cliente del tipo Cliente(lo cual puede ser null en caso de nuevo cliente)
+     * y un valor boolean que hará con que el botón para borrar cliente sea
+     * visible o no.</p>
+     */
+    private JInternalFrame crearFrameCliente(String titulo, Cliente cliente, boolean borrarVisible) {
+        FrameCliente frame = new FrameCliente(provincias, personaUtilidades);
+        frame.setTitle(titulo);
+        frame.setControl(this);
+        frame.borrarEsVisible(borrarVisible);
+        frame.setCliente(cliente);
+        return frame;
+    }
+   
 }

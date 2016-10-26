@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.seas.feedback.cliente.manager.control;
 
 import es.seas.feedback.cliente.manager.model.Provincia;
@@ -13,8 +8,11 @@ import es.seas.feedback.cliente.manager.model.service.ServicioPersona;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
 
 /**
- *
- * @author Ricardo
+ * Esta interfaz fue creada para desvincular los controles de la view.
+ * @author Ricardo Maximino<br>
+ * Para más informaciones de los metodo, ir a la documentación de alguna implementación.
+ * @see ClienteControl
+ * @see UsuarioControl
  */
 public interface PersonaControl<T> {
     void setPrincipal(Controlable princip);

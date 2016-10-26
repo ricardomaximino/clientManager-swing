@@ -1,8 +1,3 @@
-/**
- * @see 
- * El pacote modelos es donde estan todas las class necessaria para implementar
- * las reglas de negocio.
- */
 package es.seas.feedback.cliente.manager.model;
 
 import java.io.Serializable;
@@ -13,34 +8,29 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Esta class representa la localidade que será usada en una dirección. 
+ * Esta clase representa la localidade que será usada en una dirección esta 
+ * clase es un POJO. 
+ * 
+ * @author Ricardo Maximino<br><br>
+ * 
+ * <p> Esta class representa la localidade que será usada en una dirección. 
  * Realmente el campo localidade de la class Direccion recibe una String
- * he optado crear esta class para ejercitar los conocimeitos.
+ * he optado crear esta class para ejercitar los conocimeitos.</p>
  * 
- * @author Ricardo Maximino
+ * <p>La class Localidade implementa la interfaz Serializable y
+ * tiene tres variables globales con sus respectivos gets y sets.</p>
+ * <p>Las variables son:</p>
+ * <ul>
+ * <li>id - creada exclusivamente para utilizar frameworks como hibernate.</li>
+ * <li>nombre - una String con el nombre de la localidade.</li>
+ * <li>provincia - una String con el nombre de la Provincia.</li>
+ * </ul>
  * 
- * La class Localidade implementa la interfaz Serializable
- * tiene tres variables privadas con sus respectivos gets y sets
+ * <p>Override los metodos hashCode y equals para que una localidade sea igual
+ * la localidade que tenga el mismo nombre y la misma provincia.</p>
  * 
- * private long id;
- * private String nombre;
- * private String provincia;
- * 
- * public void setId(long id){
- *    this.id = id;
- * }
- * 
- * public long getId(){
- *    return id;
- * }
- * ...
- * Esta class no procesa ningún dato es solamente un POJO
- * 
- * Override los metodos hashCode y equals para que una localidade sea igual
- * tiene que tener el mismo nombre y la misma provincia.
- * 
- * Tiene dos contructores uno sin argumento y otro con dos parametros los
- * cuales inicializaran dos variable privadas.
+ * <p>Tiene dos contructores uno sin argumento y otro con dos parametros los
+ * cuales inicializaran dos variable privadas.</p>
  */
 @Entity
 @Table(name="Localidades")
@@ -53,9 +43,9 @@ public class Localidade implements Serializable{
     /**
      * Constructor sin argumento inicializará con los valores por defecto.
      * 
-     * private long id = 0;
-     * private String nombre = null;
-     * private String provincia = null;
+     * long id = 0;<br>
+     * nombre = null;<br>
+     * provincia = null;<br>
      */
     public Localidade(){}
     
@@ -65,10 +55,10 @@ public class Localidade implements Serializable{
      * @param nombre El nombre da localidade que representará la instancia que esta sendo creada. Es del tipo String.
      * @param provincia El nombre da provincia a que pertenece tal localidade. Es del tipo String.
      * 
-     * public Localidade(String nombre,String provincia){
-     *     this.nombre = nombre;
-     *     this.provincia = provincia;
-     * }
+     * <p>public Localidade(String nombre,String provincia){<br>
+     * &#32;&#32;&#32;    this.nombre = nombre;<br>
+     * &#32;&#32;&#32;    this.provincia = provincia;<br>
+     * }</p>
      */
     public Localidade(String nombre,String provincia){
         this.nombre = nombre;
@@ -76,30 +66,49 @@ public class Localidade implements Serializable{
     }
 
     /**
-     * Retorna el valor de la variable id como long
-     * @return 
+     * Retorna el valor de la variable global id.
+     * @return del tipo String.
      */
     public long getId() {
         return id;
     }
 
+    /**
+     * Configura el valor de la variable global id.
+     * @param id del tipo long.
+     */
     public void setId(long id) {
         this.id = id;
     }
 
-    
+    /**
+     * Retorna el valor de la variable global nombre.
+     * @return del tipo String.
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Configura el valor de la variable global nombre.
+     * @param nombre del tipo String.
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Retorna el valor de la variable provincia.
+     * @return del tipo String.
+     */
     public String getProvincia() {
         return provincia;
     }
 
+    /**
+     * Configura el valor de la variable global provincia.
+     * @param provincia del tipo String.
+     */
     public void setProvincia(String provincia) {
         this.provincia = provincia;
     }
@@ -108,14 +117,14 @@ public class Localidade implements Serializable{
      * 
      * Este metodo ha sido Override en conjunto con el metodo equals, para crear un hashCode usando las variables nombre y provincia.
      * 
-     * @return Retorna un int que es el resultado de un algoritimo usando las variables nombre y provincia;
+     * @return Retorna un int que es el resultado de un algoritimo usando las variables nombre y provincia;<br><br>
      * 
-     * public int hashCode() {
-     *   int hash = 7;
-     *   hash = 83 * hash + Objects.hashCode(this.nombre);
-     *   hash = 83 * hash + Objects.hashCode(this.provincia);
-     *   return hash;
-     * }
+     * public int hashCode() {<br>
+     * &#32;&#32;&#32;  int hash = 7;<br>
+     * &#32;&#32;&#32;  hash = 83 * hash + Objects.hashCode(this.nombre);<br>
+     * &#32;&#32;&#32;  hash = 83 * hash + Objects.hashCode(this.provincia);<br>
+     * &#32;&#32;&#32;  return hash;<br>
+     * }<br>
      */
     @Override
     public int hashCode() {
@@ -131,7 +140,7 @@ public class Localidade implements Serializable{
      * una localidade que tenga el mismo nombre y la misma provincia.
      * 
      * @param obj Es el Objeto para compara si son iguales ;
-     * @return boolean true será si es not null, instanceOf Localidade, nombre y provincia son iguales. Sino retornará false.
+     * @return un valor del tipo boolean.
      */
     @Override
     public boolean equals(Object obj) {
