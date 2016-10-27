@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import es.seas.feedback.cliente.manager.model.service.ServicioPersona;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
 import es.seas.feedback.cliente.manager.view.ListaPersona;
+import java.awt.Toolkit;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -323,6 +324,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
     @Override
     public void crearFrameBuscar() {
         BuscarCliente buscarCliente = new BuscarCliente(null, true, personaUtilidades);
+        buscarCliente.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("../view/icon.png")));
         buscarCliente.setControl(this);
         buscarCliente.setLocation(60, 60);
         buscarCliente.clear();

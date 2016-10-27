@@ -17,6 +17,7 @@ import es.seas.feedback.cliente.manager.view.ListaPersona;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
 import es.seas.feedback.cliente.manager.view.usuario.BuscarUsuario;
 import es.seas.feedback.cliente.manager.view.usuario.FrameUsuario;
+import java.awt.Toolkit;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -322,6 +323,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
     @Override
     public void crearFrameBuscar() {
         BuscarUsuario buscarUsuario = new BuscarUsuario(null, true, personaUtilidades);
+        buscarUsuario.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("../view/icon.png")));
         buscarUsuario.setControl(this);
         buscarUsuario.setLocation(60, 60);
         buscarUsuario.clear();

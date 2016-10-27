@@ -57,7 +57,7 @@ public abstract class Persona implements Serializable {
     private String segundoApellido;
     @Convert(converter = LocalDateAttributeConverter.class)
     private LocalDate fechaNacimiento;
-    private boolean activo;
+    private boolean activo = false;
     @Convert(converter = LocalDateAttributeConverter.class)
     private LocalDate fechaPrimeraAlta;
     @Convert(converter = LocalDateAttributeConverter.class)

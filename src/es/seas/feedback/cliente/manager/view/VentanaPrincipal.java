@@ -115,7 +115,9 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
         menuItemCastellano.setText(view.getString("menuItem_Spanish"));
         menuItemIngles.setText(view.getString("menuItem_English"));
         menuItemPortugues.setText(view.getString("menuItem_Portugues"));
-        
+        //Configuraciones
+        menuConfiguracion.setText(view.getString("menu_Settings"));
+       
     }
 
     /**
@@ -148,6 +150,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
         menuItemCastellano = new javax.swing.JMenuItem();
         menuItemIngles = new javax.swing.JMenuItem();
         menuItemPortugues = new javax.swing.JMenuItem();
+        menuConfiguracion = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(850, 650));
@@ -286,6 +289,9 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
 
         menuBar.add(menuLengua);
 
+        menuConfiguracion.setText(bundle.getString("menu_Settings")); // NOI18N
+        menuBar.add(menuConfiguracion);
+
         setJMenuBar(menuBar);
 
         pack();
@@ -366,6 +372,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuCliente;
+    private javax.swing.JMenu menuConfiguracion;
     private javax.swing.JMenuItem menuItemBuscarCliente;
     private javax.swing.JMenuItem menuItemBuscarUsuario;
     private javax.swing.JMenuItem menuItemCascada;
