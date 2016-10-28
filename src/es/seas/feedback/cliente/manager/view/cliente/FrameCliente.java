@@ -24,6 +24,8 @@ import javax.swing.JOptionPane;
  */
 public class FrameCliente extends javax.swing.JInternalFrame {
 
+    public static final String TELEFONO = "Telefono";
+    public static final String EMAIL = "E-mail";
     private final String[] mesNombres;
     private ClienteControl control;
     private Map<String, Provincia> provincias;
@@ -82,11 +84,11 @@ public class FrameCliente extends javax.swing.JInternalFrame {
             Iterator<Contacto> iterator = clien.getContactos().iterator();
             while (iterator.hasNext()) {
                 contacto = iterator.next();
-                if (contacto.getDescripcion().equals("Telefono")) {
+                if (contacto.getDescripcion().equals(TELEFONO)) {
                     txtTelefono.setText(contacto.getContacto());
                 }
 
-                if (contacto.getDescripcion().equals("E-mail")) {
+                if (contacto.getDescripcion().equals(EMAIL)) {
                     txtEmail.setText(contacto.getContacto());
                 }
             }
@@ -105,20 +107,42 @@ public class FrameCliente extends javax.swing.JInternalFrame {
     public Cliente getCliente() throws DateTimeException {
         Cliente newCliente = new Cliente();
         Direccion direccion = new Direccion();
-        Contacto telefono = new Contacto("Telefono", txtTelefono.getText());
-        Contacto email = new Contacto("E-mail", txtEmail.getText());
+        Contacto telefono = new Contacto(TELEFONO, txtTelefono.getText());
+        Contacto email = new Contacto(EMAIL, txtEmail.getText());
+        //nuevo
+        if(cliente != null && cliente.getContactos().size()>1){
+            for(Contacto c : cliente.getContactos()){
+                if(c.getDescripcion().toUpperCase().equals(TELEFONO.toUpperCase())){
+                    telefono.setId(c.getId());
+                }
+                if(c.getDescripcion().toUpperCase().equals(EMAIL.toUpperCase())){
+                    email.setId(c.getId());
+                }
+            }
+        }
 
         newCliente.setDirecion(direccion);
         newCliente.getContactos().add(telefono);
         newCliente.getContactos().add(email);
-
+        
+        //nuevo
+        if(cliente != null) newCliente.setId(cliente.getId());
+        
         newCliente.setNif(txtNIF.getText());
         newCliente.setNombre(txtNombre.getText());
         newCliente.setPrimerApellido(txtPrimerApellido.getText());
         newCliente.setSegundoApellido(txtSegundoApellido.getText());
 
         newCliente.setFechaNacimiento(LocalDate.of(Integer.parseInt(cmbAño.getSelectedItem().toString()), cmbMes.getSelectedIndex() + 1, Integer.parseInt(cmbDia.getSelectedItem().toString())));
-
+        
+        //nuevo
+        if(cliente != null){
+            newCliente.setFechaPrimeraAlta(cliente.getFechaPrimeraAlta()== null? LocalDate.now() : cliente.getFechaPrimeraAlta());
+            newCliente.setFechaUltimaBaja(cliente.getFechaUltimaBaja() == null? null : cliente.getFechaUltimaBaja());
+        }else{
+            newCliente.setFechaPrimeraAlta(LocalDate.now());
+            newCliente.setFechaUltimaBaja(null);
+        }
         newCliente.setActivo(chkActivo.isSelected());
 
         newCliente.getDirecion().setProvincia((String) cmbProvincia.getSelectedItem());

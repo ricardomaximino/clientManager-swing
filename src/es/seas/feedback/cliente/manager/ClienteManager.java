@@ -2,7 +2,6 @@ package es.seas.feedback.cliente.manager;
 
 import es.seas.feedback.cliente.manager.control.ClienteControl;
 import es.seas.feedback.cliente.manager.model.Provincia;
-import es.seas.feedback.cliente.manager.model.dao.ClienteDAO;
 import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAO;
 import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAOImpl;
 import es.seas.feedback.cliente.manager.model.dao.datos.LectorEscritor;
@@ -18,6 +17,7 @@ import es.seas.feedback.cliente.manager.control.UsuarioControl;
 import es.seas.feedback.cliente.manager.model.Cliente;
 import es.seas.feedback.cliente.manager.model.Usuario;
 import es.seas.feedback.cliente.manager.model.dao.UsuarioDAO;
+import es.seas.feedback.cliente.manager.model.dao.jdbc.ClienteJDBCDAO;
 import es.seas.feedback.cliente.manager.model.service.ServicioUsuario;
 import es.seas.feedback.cliente.manager.view.Controlable;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
@@ -124,7 +124,7 @@ public class ClienteManager {
         //PersonaUtilidades
 
         //ServicioCliente
-        ServicioPersona<Cliente> servicioCliente = new ServicioCliente(new ClienteDAO());
+        ServicioPersona<Cliente> servicioCliente = new ServicioCliente(new ClienteJDBCDAO());
         //ServicioCliente
 
         //ServicioUsuario

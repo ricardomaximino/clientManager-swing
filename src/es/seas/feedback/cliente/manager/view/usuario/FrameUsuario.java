@@ -27,7 +27,8 @@ import javax.xml.bind.ValidationException;
  * @author Ricardo
  */
 public class FrameUsuario extends javax.swing.JInternalFrame {
-
+    public static final String TELEFONO = "Telefono";
+    public static final String EMAIL = "E-mail";
     private UsuarioControl control;
     private Map<String, Provincia> provincias;
     private Usuario usuario;
@@ -94,11 +95,11 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
             Iterator<Contacto> iterator = usu.getContactos().iterator();
             while (iterator.hasNext()) {
                 contacto = iterator.next();
-                if (contacto.getDescripcion().equals("Telefono")) {
+                if (contacto.getDescripcion().equals(TELEFONO)) {
                     txtTelefono.setText(contacto.getContacto());
                 }
 
-                if (contacto.getDescripcion().equals("E-mail")) {
+                if (contacto.getDescripcion().equals(EMAIL)) {
                     txtEmail.setText(contacto.getContacto());
                 }
             }
@@ -117,13 +118,27 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
     public Usuario getUsuario() throws DateTimeException,ValidationException {
         Usuario newUsuario = new Usuario();
         Direccion direccion = new Direccion();
-        Contacto telefono = new Contacto("Telefono", txtTelefono.getText());
-        Contacto email = new Contacto("E-mail", txtEmail.getText());
+        Contacto telefono = new Contacto(TELEFONO, txtTelefono.getText());
+        Contacto email = new Contacto(EMAIL, txtEmail.getText());
 
+        //nuevo
+        if(usuario != null && usuario.getContactos().size()>1){
+            for(Contacto c: usuario.getContactos()){
+                if(c.getDescripcion().toUpperCase().equals(TELEFONO)){
+                    telefono.setId(c.getId());
+                }
+                if(c.getDescripcion().toUpperCase().equals(EMAIL)){
+                    email.setId(c.getId());
+                }
+            }
+        }
         newUsuario.setDirecion(direccion);
         newUsuario.getContactos().add(telefono);
         newUsuario.getContactos().add(email);
 
+        //nuevo
+        if(usuario != null) newUsuario.setId(usuario.getId());
+        
         newUsuario.setNif(txtNIF.getText());
         newUsuario.setNombre(txtNombre.getText());
         newUsuario.setPrimerApellido(txtPrimerApellido.getText());
