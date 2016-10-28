@@ -16,8 +16,8 @@ import es.seas.feedback.cliente.manager.control.PersonaControl;
 import es.seas.feedback.cliente.manager.control.UsuarioControl;
 import es.seas.feedback.cliente.manager.model.Cliente;
 import es.seas.feedback.cliente.manager.model.Usuario;
-import es.seas.feedback.cliente.manager.model.dao.UsuarioDAO;
 import es.seas.feedback.cliente.manager.model.dao.jdbc.ClienteJDBCDAO;
+import es.seas.feedback.cliente.manager.model.dao.jdbc.UsuarioJDBCDAO;
 import es.seas.feedback.cliente.manager.model.service.ServicioUsuario;
 import es.seas.feedback.cliente.manager.view.Controlable;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
@@ -128,7 +128,7 @@ public class ClienteManager {
         //ServicioCliente
 
         //ServicioUsuario
-        ServicioPersona<Usuario> servicioUsuario = new ServicioUsuario(new UsuarioDAO());
+        ServicioPersona<Usuario> servicioUsuario = new ServicioUsuario(new UsuarioJDBCDAO());
         //ServicioUsuario
 
         //Controlable

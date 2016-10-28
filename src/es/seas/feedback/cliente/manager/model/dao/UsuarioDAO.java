@@ -81,6 +81,7 @@ public class UsuarioDAO implements PersonaDAO<Usuario>{
             Usuario usu = (Usuario) session.get(Usuario.class, nif);
             if (usu != null) {
                 usu.setActivo(false);
+                usu.setFechaUltimaBaja(LocalDate.now());
                 session.update(usu);
                 tx.commit();
             } else {

@@ -21,12 +21,16 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.xml.bind.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Ricardo
  */
 public class FrameUsuario extends javax.swing.JInternalFrame {
+    public static final Logger LOG = LoggerFactory.getLogger(FrameUsuario.class);
+
     public static final String TELEFONO = "Telefono";
     public static final String EMAIL = "E-mail";
     private UsuarioControl control;
@@ -46,6 +50,9 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         this.personaUtilidades = personaUtilidades;
         provincias = prov;
         initCombos();
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 5, 1);
+        sprPoderDeAcceso.setModel(spinnerModel);
+        sprPoderDeAcceso.repaint();
     }
 
     public UsuarioControl getControl() {
@@ -76,8 +83,6 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         this.personaUtilidades = personaUtilidades;
     }
 
-    
-    
     public void setUsuario(Usuario usu) {
         if (usu != null) {
             this.usuario = usu;
@@ -115,19 +120,19 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         }
     }
 
-    public Usuario getUsuario() throws DateTimeException,ValidationException {
+    public Usuario getUsuario() throws DateTimeException, ValidationException {
         Usuario newUsuario = new Usuario();
         Direccion direccion = new Direccion();
         Contacto telefono = new Contacto(TELEFONO, txtTelefono.getText());
         Contacto email = new Contacto(EMAIL, txtEmail.getText());
 
         //nuevo
-        if(usuario != null && usuario.getContactos().size()>1){
-            for(Contacto c: usuario.getContactos()){
-                if(c.getDescripcion().toUpperCase().equals(TELEFONO)){
+        if (usuario != null && usuario.getContactos().size() > 1) {
+            for (Contacto c : usuario.getContactos()) {
+                if (c.getDescripcion().toUpperCase().equals(TELEFONO)) {
                     telefono.setId(c.getId());
                 }
-                if(c.getDescripcion().toUpperCase().equals(EMAIL)){
+                if (c.getDescripcion().toUpperCase().equals(EMAIL)) {
                     email.setId(c.getId());
                 }
             }
@@ -137,8 +142,10 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         newUsuario.getContactos().add(email);
 
         //nuevo
-        if(usuario != null) newUsuario.setId(usuario.getId());
-        
+        if (usuario != null) {
+            newUsuario.setId(usuario.getId());
+        }
+
         newUsuario.setNif(txtNIF.getText());
         newUsuario.setNombre(txtNombre.getText());
         newUsuario.setPrimerApellido(txtPrimerApellido.getText());
@@ -146,6 +153,14 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
 
         newUsuario.setFechaNacimiento(LocalDate.of(Integer.parseInt(cmbAño.getSelectedItem().toString()), cmbMes.getSelectedIndex() + 1, Integer.parseInt(cmbDia.getSelectedItem().toString())));
 
+        //nuevo
+        if (usuario != null) {
+            newUsuario.setFechaPrimeraAlta(usuario.getFechaPrimeraAlta() != null ? usuario.getFechaPrimeraAlta() : LocalDate.now());
+            newUsuario.setFechaUltimaBaja(usuario.getFechaUltimaBaja() == null ? null : usuario.getFechaUltimaBaja());
+        } else {
+            newUsuario.setFechaPrimeraAlta(LocalDate.now());
+            newUsuario.setFechaUltimaBaja(null);
+        }
         newUsuario.setActivo(chkActivo.isSelected());
 
         newUsuario.getDirecion().setProvincia((String) cmbProvincia.getSelectedItem());
@@ -156,10 +171,10 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         newUsuario.getDirecion().setNumero(txtNumero.getText());
         newUsuario.getDirecion().setNota(txtAreaNota.getText());
 
-        if(txtRepitaContraseña.isEnabled()){
+        if (txtRepitaContraseña.isEnabled()) {
             if (String.copyValueOf(txtContraseña.getPassword()).equals(String.copyValueOf(txtRepitaContraseña.getPassword()))) {
                 newUsuario.setContraseña(String.copyValueOf(txtContraseña.getPassword()));
-                newUsuario.setLevel((int)sprPoderDeAcceso.getValue());
+                newUsuario.setLevel((int) sprPoderDeAcceso.getValue());
             } else {
                 txtRepitaContraseña.setText("");
                 txtContraseña.requestFocus();
@@ -182,12 +197,12 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         control.closeFrame(this);
         super.dispose();
     }
-    
-      private void initCombos() {
+
+    private void initCombos() {
         personaUtilidades.setComboDia(cmbDia);
         personaUtilidades.setComboMes(cmbMes);
         personaUtilidades.setComboAño(80, 33, cmbAño);
@@ -196,7 +211,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         String prov = cmbProvincia.getSelectedItem().toString();
         personaUtilidades.setComboLocalidade(provincias, prov, "Santa Pola", cmbLocalidade);
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -632,6 +647,11 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         jLabel15.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel15.setText(bundle.getString("label_Password")); // NOI18N
 
+        txtContraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtContraseñaActionPerformed(evt);
+            }
+        });
         txtContraseña.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtContraseñaKeyPressed(evt);
@@ -655,6 +675,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
 
         sprPoderDeAcceso.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         sprPoderDeAcceso.setEnabled(false);
+        sprPoderDeAcceso.setValue(0);
         sprPoderDeAcceso.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 sprPoderDeAccesoKeyPressed(evt);
@@ -840,17 +861,17 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
             Usuario usu = getUsuario();
             if (control.guardar(usu)) {
                 JOptionPane.showMessageDialog(this, msgUsuarioGuardado(usu));
-                this.dispose();           
-            }          
+                this.dispose();
+            }
         } catch (DateTimeException ex) {
             JOptionPane.showMessageDialog(this, msgErrorDeFecha());
             cmbDia.requestFocus();
-        }catch (ValidationException ex){
-            JOptionPane.showMessageDialog(this, msgErrorDeFecha());
+        } catch (ValidationException ex) {
+            JOptionPane.showMessageDialog(this, view.getString("message_The_fields_password_repitePassword_must_be_equals"));
         }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
-        private String msgUsuarioGuardado(Usuario usuario) {
+    private String msgUsuarioGuardado(Usuario usuario) {
         StringBuilder sb = new StringBuilder();
         sb.append(view.getString("message_Registry"));
         sb.append(usuario.getNombre());
@@ -879,7 +900,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         sb.append(".");
         return sb.toString();
     }
-    
+
     private void cmbDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDiaActionPerformed
 
     }//GEN-LAST:event_cmbDiaActionPerformed
@@ -902,25 +923,25 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
 
     private void btnBorrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarClienteActionPerformed
         int respuesta = JOptionPane.showConfirmDialog(this, view.getString("message_Are_you_sure_want_delete_this_registry"));
-        try{
+        try {
             if (respuesta == 0) {
                 Usuario usu = getUsuario();
                 if (control.getServicio().borrarRegistro(usu)) {
                     JOptionPane.showMessageDialog(this, usu + view.getString("message_was_delete_from_the_database"));
-                    dispose();              
+                    dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, usu + view.getString("message_could_not_be_delete_try_later"));
                 }
             }
-        }catch(DateTimeException | ValidationException ex){
-            if( ex instanceof DateTimeException){
+        } catch (DateTimeException | ValidationException ex) {
+            if (ex instanceof DateTimeException) {
                 JOptionPane.showMessageDialog(this, msgErrorDeFecha());
                 cmbDia.requestFocus();
             }
-            if(ex instanceof ValidationException){
+            if (ex instanceof ValidationException) {
                 JOptionPane.showMessageDialog(this, view.getString("message_The_fields_password_repitePassword_must_be_equals"));
             }
-        
+
         }
     }//GEN-LAST:event_btnBorrarClienteActionPerformed
 
@@ -941,7 +962,13 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
                     txtRepitaContraseña.setEnabled(true);
                     txtRepitaContraseña.requestFocus();
                     sprPoderDeAcceso.setEnabled(true);
-                    SpinnerNumberModel spinnerModel = new SpinnerNumberModel(usuario.getLevel(), 0, 5, 1);
+                    SpinnerNumberModel spinnerModel;
+                    try{
+                    spinnerModel = new SpinnerNumberModel(usuario.getLevel(), 0, 5, 1);
+                    }catch(Exception ex){
+                        LOG.debug(ex.getMessage());
+                        spinnerModel = new SpinnerNumberModel(usuario.getLevel(), 0, usuario.getLevel(), 1);
+                    }
                     sprPoderDeAcceso.setModel(spinnerModel);
                     sprPoderDeAcceso.repaint();
                 } else {
@@ -971,6 +998,10 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
             cmbProvincia.requestFocus();
         }
     }//GEN-LAST:event_sprPoderDeAccesoKeyPressed
+
+    private void txtContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraseñaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtContraseñaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;

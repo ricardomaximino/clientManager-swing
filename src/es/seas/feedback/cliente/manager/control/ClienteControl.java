@@ -399,7 +399,8 @@ public class ClienteControl implements PersonaControl<Cliente> {
      * @param list - Lista de Cliente del tipo List&lt;Cliente&gt; con los
      * clientes que deven aparecer en la tabla.<br>
      * @param titulo - Titulo del tipo String que será el titulo del frame
-     * creado en conjunto con la fecha y hora local.<br><br>
+     * creado en conjunto con la fecha y hora local y el número de registro
+     * listado.<br><br>
      *
      * Este metodo crea una instancia de la clase ListaPersona usando el
      * contructor con un argumento:<br><br>
@@ -422,7 +423,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
      */
     private void crearFrameListaCliente(List<Cliente> list, String titulo) {
         ListaPersona lista = new ListaPersona(new TableModelCliente(list, personaUtilidades.getTitulosTablasDePersonas()));
-        lista.setTitle(titulo + " - " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
+        lista.setTitle(titulo + " - " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME) + " - " + list.size());
         lista.getTabla().setColumnModel(personaUtilidades.configurarAnchoDeLasColumnas(lista.getTabla().getColumnModel()));
         lista.setControl(this);
         principal.showInternalFrame(lista);

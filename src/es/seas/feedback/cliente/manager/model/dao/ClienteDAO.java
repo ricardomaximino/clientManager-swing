@@ -76,6 +76,7 @@ public class ClienteDAO implements PersonaDAO<Cliente> {
             Cliente cli = (Cliente) session.get(Cliente.class, nif);
             if (cli != null) {
                 cli.setActivo(false);
+                cli.setFechaUltimaBaja(LocalDate.now());
                 session.update(cli);
                 tx.commit();
             } else {
