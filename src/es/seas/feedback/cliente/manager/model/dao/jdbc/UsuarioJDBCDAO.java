@@ -616,7 +616,6 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                     Contacto contacto = new Contacto(rsc.getString("descripcion"),
                             rsc.getString("contacto"));
                     contacto.setId(rsc.getLong("id"));
-                    System.out.println("Contacto id in PORNIF: " + contacto.getId());
                     usuario.getContactos().add(contacto);
                 }
             }
@@ -813,7 +812,7 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
                 rsuc = stm.executeQuery();
-                while (rs.next()) {
+                while (rsuc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
                     stm.setLong(1, rsuc.getLong(1));
                     rsc = stm.executeQuery();
@@ -917,7 +916,7 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
                 rsuc = stm.executeQuery();
-                while (rs.next()) {
+                while (rsuc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
                     stm.setLong(1, rsuc.getLong(1));
                     rsc = stm.executeQuery();
@@ -1124,7 +1123,7 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
                 rsuc = stm.executeQuery();
-                while (rs.next()) {
+                while (rsuc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
                     stm.setLong(1, rsuc.getLong(1));
                     rsc = stm.executeQuery();

@@ -675,7 +675,6 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
 
         sprPoderDeAcceso.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         sprPoderDeAcceso.setEnabled(false);
-        sprPoderDeAcceso.setValue(0);
         sprPoderDeAcceso.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 sprPoderDeAccesoKeyPressed(evt);

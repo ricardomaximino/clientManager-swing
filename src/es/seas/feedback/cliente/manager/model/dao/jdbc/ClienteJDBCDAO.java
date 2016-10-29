@@ -433,7 +433,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
      */
     @Override
     public List<Cliente> listarRegistros() {
-        Cliente cliente = null;
+        Cliente cliente;
         con = getConnection();
         stm = null;
         rs = null;
@@ -485,7 +485,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                 while (rscc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos "
                             + "WHERE id=?");
-                    stm.setLong(1, rs.getLong(1));
+                    stm.setLong(1, rscc.getLong(1));
                     rsc = stm.executeQuery();
                     rsc.first();
                     Contacto contacto = new Contacto(rsc.getString("descripcion"),
@@ -590,7 +590,6 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     System.out.println("Contacto id in PORNIF: " + contacto.getId());
                     cliente.getContactos().add(contacto);
                 }
-                rs.close();
             }
             stm.close();
         } catch (SQLException ex) {
@@ -872,7 +871,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
                 rscc = stm.executeQuery();
-                while (rs.next()) {
+                while (rscc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
                     stm.setLong(1, rscc.getLong(1));
                     rsc = stm.executeQuery();
@@ -970,7 +969,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
                 rscc = stm.executeQuery();
-                while (rs.next()) {
+                while (rscc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
                     stm.setLong(1, rscc.getLong(1));
                     rsc = stm.executeQuery();
@@ -1115,7 +1114,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
      */
     @Override
     public List<Cliente> buscarRegistrosDadoDeAlta() {
-        Cliente cliente = null;
+        Cliente cliente;
         con = getConnection();
         stm = null;
         rs = null;
@@ -1164,7 +1163,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
                 rscc = stm.executeQuery();
-                while (rs.next()) {
+                while (rscc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
                     stm.setLong(1, rscc.getLong(1));
                     rsc = stm.executeQuery();
