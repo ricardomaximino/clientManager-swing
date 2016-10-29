@@ -1,7 +1,3 @@
-/**
- * Este package es donde se encuentran todas las class y interfaces relacionada
- * a la API JDBC.
- */
 package es.seas.feedback.cliente.manager.model.dao.jdbc;
 
 import es.seas.feedback.cliente.manager.model.Cliente;
@@ -22,18 +18,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Esta classe tiene la misma funcionalidades que el ClienteDAO
+ * Esta classe tiene la misma funcionalidades y implementa la misma interfaz 
+ * que el ClienteDAO, la única diferencia es que esta clase utiliza JDBC y la
+ * clase ClienteDAO utiliza Hibernate.
  *
- * @author Ricardo
+ * @author Ricardo Maximino<br><br>
  */
 public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
-    private static final Logger log = LoggerFactory.getLogger(ClienteJDBCDAO.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClienteJDBCDAO.class);
 
     Connection con;
     PreparedStatement stm;
     ResultSet rs;
     ResultSet rsc;
+    ResultSet rscc;
 
+    public ClienteJDBCDAO(){
+        LOG.info("This class starts.");
+        createTables();
+    }
     private Connection getConnection() {
         return ConnectionFactory.getConnection();
     }
@@ -140,7 +143,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     contactoId = stm.executeUpdate();
                     // if(contactoId != 1 significa que hay registro duplicado
                     if (contactoId != 1) {
-                        log.error("if(contactoId != 1 means that in the database"
+                        LOG.error("if(contactoId != 1 means that in the database"
                                 + " repited line or some constrain that do not "
                                 + "allow new insert into contactos. In the method "
                                 + "añadirNuevoRegistro.");
@@ -157,14 +160,14 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
             }
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method añadirNuevoRegistro 1ª of 3 "
+            LOG.error("SQLException in the method añadirNuevoRegistro 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method añadirNuevoRegistro 2ª "
+                LOG.error("SQLException in the method añadirNuevoRegistro 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -173,7 +176,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method añadirNuevoRegistro 3ª "
+                LOG.error("SQLException in the method añadirNuevoRegistro 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -284,14 +287,14 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
             }
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method atualizarRegistro 1ª of 3 "
+            LOG.error("SQLException in the method atualizarRegistro 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method atualizarRegistro 2ª "
+                LOG.error("SQLException in the method atualizarRegistro 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -300,7 +303,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method atualizarRegistro 3ª "
+                LOG.error("SQLException in the method atualizarRegistro 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -341,14 +344,14 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
             resultado = stm.executeUpdate() > 0;
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method darDeBaja 1ª of 3 "
+            LOG.error("SQLException in the method darDeBaja 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method darDeBaja 2ª "
+                LOG.error("SQLException in the method darDeBaja 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -357,7 +360,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method darDeBaja 3ª "
+                LOG.error("SQLException in the method darDeBaja 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -399,14 +402,14 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
             resultado = stm.executeUpdate() > 0;
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method borrarRegistro 1ª of 3 "
+            LOG.error("SQLException in the method borrarRegistro 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method borrarRegistro 2ª "
+                LOG.error("SQLException in the method borrarRegistro 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -415,7 +418,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method borrarRegistro 3ª "
+                LOG.error("SQLException in the method borrarRegistro 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -434,6 +437,8 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
         con = getConnection();
         stm = null;
         rs = null;
+        rsc= null;
+        rscc = null;
         String sql = "SELECT * FROM clientes ORDER BY nombre";
         List<Cliente> lista = new ArrayList<>();
         try {
@@ -476,37 +481,30 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
-                rsc = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
-                while (rsc.next()) {
-                    contactosIds.add(rsc.getLong(1));
-                }
-                for (Long l : contactosIds) {
+                rscc = stm.executeQuery();
+                while (rscc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos "
                             + "WHERE id=?");
-                    stm.setLong(1, l);
+                    stm.setLong(1, rs.getLong(1));
                     rsc = stm.executeQuery();
                     rsc.first();
                     Contacto contacto = new Contacto(rsc.getString("descripcion"),
                             rsc.getString("contacto"));
                     contacto.setId(rsc.getLong("id"));
-                    System.out.println("contacto id na lista " + contacto.getId());
                     cliente.getContactos().add(contacto);
                 }
                 lista.add(cliente);
             }
-            if(rsc != null) rsc.close();
-            if(rs != null) rs.close();
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method listarRegistros 1ª of 3 "
+            LOG.error("SQLException in the method listarRegistros 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method listarRegistros 2ª "
+                LOG.error("SQLException in the method listarRegistros 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -515,7 +513,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method listarRegistros 3ª "
+                LOG.error("SQLException in the method listarRegistros 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -596,14 +594,14 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
             }
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method buscarRegistroPorNIF 1ª of 3 "
+            LOG.error("SQLException in the method buscarRegistroPorNIF 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method buscarRegistroPorNIF 2ª "
+                LOG.error("SQLException in the method buscarRegistroPorNIF 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -612,7 +610,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method buscarRegistroPorNIF 3ª "
+                LOG.error("SQLException in the method buscarRegistroPorNIF 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -692,14 +690,14 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
             }
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method buscarRegistroPorID 1ª of 3 "
+            LOG.error("SQLException in the method buscarRegistroPorID 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method buscarRegistroPorID 2ª "
+                LOG.error("SQLException in the method buscarRegistroPorID 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -708,7 +706,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method buscarRegistroPorID 3ª "
+                LOG.error("SQLException in the method buscarRegistroPorID 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -731,6 +729,8 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
         con = getConnection();
         stm = null;
         rs = null;
+        rsc = null;
+        rscc = null;
         String sql = "SELECT * FROM clientes WHERE primerApellido=? ORDER BY nombre";
         List<Cliente> lista = new ArrayList<>();
         try {
@@ -773,34 +773,29 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
-                while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
+                rscc = stm.executeQuery();
+                while (rscc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1,rscc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     cliente.getContactos().add(contacto);
                 }
                 lista.add(cliente);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method buscarRegistrosPorPrimerApellido 1ª of 3 "
+            LOG.error("SQLException in the method buscarRegistrosPorPrimerApellido 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method buscarRegistrosPorPrimerApellido 2ª "
+                LOG.error("SQLException in the method buscarRegistrosPorPrimerApellido 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -809,7 +804,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method buscarRegistrosPorPrimerApellido 3ª "
+                LOG.error("SQLException in the method buscarRegistrosPorPrimerApellido 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -832,6 +827,8 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
         con = getConnection();
         stm = null;
         rs = null;
+        rscc = null;
+        rsc = null;
         String sql = "SELECT * FROM clientes WHERE segundoApellido=? ORDER BY nombre";
         List<Cliente> lista = new ArrayList<>();
         try {
@@ -874,34 +871,29 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
+                rscc = stm.executeQuery();
                 while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rscc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     cliente.getContactos().add(contacto);
                 }
                 lista.add(cliente);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method buscarRegistrosPorSegundoApellido 1ª of 3 "
+            LOG.error("SQLException in the method buscarRegistrosPorSegundoApellido 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method buscarRegistrosPorSegundoApellido 2ª "
+                LOG.error("SQLException in the method buscarRegistrosPorSegundoApellido 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -910,7 +902,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method buscarRegistrosPorSegundoApellido 3ª "
+                LOG.error("SQLException in the method buscarRegistrosPorSegundoApellido 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -933,6 +925,8 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
         con = getConnection();
         stm = null;
         rs = null;
+        rscc = null;
+        rsc = null;
         String sql = "SELECT * FROM clientes WHERE nombre=? ORDER BY primerApellido";
         List<Cliente> lista = new ArrayList<>();
         try {
@@ -975,34 +969,29 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
+                rscc = stm.executeQuery();
                 while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rscc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     cliente.getContactos().add(contacto);
                 }
                 lista.add(cliente);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method buscarRegistrosPorNombre 1ª of 3 "
+            LOG.error("SQLException in the method buscarRegistrosPorNombre 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method buscarRegistrosPorNombre 2ª "
+                LOG.error("SQLException in the method buscarRegistrosPorNombre 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -1011,7 +1000,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method buscarRegistrosPorNombre 3ª "
+                LOG.error("SQLException in the method buscarRegistrosPorNombre 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -1033,6 +1022,8 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
         con = getConnection();
         stm = null;
         rs = null;
+        rscc = null;
+        rsc = null;
         String sql = "SELECT * FROM clientes WHERE activo=? ORDER BY nombre";
         List<Cliente> lista = new ArrayList<>();
         try {
@@ -1075,34 +1066,29 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
-                while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
+                rscc = stm.executeQuery();
+                while (rscc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rscc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     cliente.getContactos().add(contacto);
                 }
                 lista.add(cliente);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method buscarRegistrosDadoDeBaja 1ª of 3 "
+            LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method buscarRegistrosDadoDeBaja 2ª "
+                LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -1111,7 +1097,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method buscarRegistrosDadoDeBaja 3ª "
+                LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -1133,6 +1119,8 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
         con = getConnection();
         stm = null;
         rs = null;
+        rscc = null;
+        rsc = null;
         String sql = "SELECT * FROM clientes WHERE activo=? ORDER BY nombre";
         List<Cliente> lista = new ArrayList<>();
         try {
@@ -1175,34 +1163,29 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "clientes_contactos WHERE clientes_id=?");
                 stm.setLong(1, cliente.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
+                rscc = stm.executeQuery();
                 while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rscc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     cliente.getContactos().add(contacto);
                 }
                 lista.add(cliente);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
-            log.error("SQLException in the method buscarRegistrosDadoDeBaja 1ª of 3 "
+            LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 1ª of 3 "
                     + "SQLException catcher ", ex);
             try {
                 if (con != null) {
                     con.rollback();
                 }
             } catch (SQLException exx) {
-                log.error("SQLException in the method buscarRegistrosDadoDeBaja 2ª "
+                LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 2ª "
                         + "of 3 SQLException catcher ", exx);
             }
         } finally {
@@ -1211,7 +1194,7 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     con.close();
                 }
             } catch (SQLException ex) {
-                log.error("SQLException in the method buscarRegistrosDadoDeBaja 3ª "
+                LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 3ª "
                         + "of 3 SQLException catcher ", ex);
             }
         }
@@ -1237,6 +1220,57 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
             }
         }
         return lista;
+    }
+    
+        private void createTables() {
+
+        String[] tablas = new String[3];
+        tablas[0] = "CREATE TABLE IF NOT EXISTS"
+                + " clientes(id BIGINT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+                + " nif VARCHAR(100) NOT NULL UNIQUE, nombre VARCHAR(100),"
+                + " primerApellido VARCHAR(100), segundoApellido VARCHAR(100),"
+                + " fechaNacimiento DATE, fechaPrimeraAlta DATE,"
+                + " fechaUltimaBaja DATE, activo BIT(1), provincia VARCHAR(100),"
+                + " localidade VARCHAR(100), direccion VARCHAR(100),"
+                + " numero VARCHAR(10), cp VARCHAR(100), nota VARCHAR(100))";
+        
+        tablas[1] = "CREATE TABLE IF NOT EXISTS contactos(id BIGINT(5) "
+                + "NOT NULL AUTO_INCREMENT PRIMARY KEY,descripcion "
+                + "VARCHAR(100),contacto VARCHAR(100))";
+        
+        tablas[2] = "CREATE TABLE IF NOT EXISTS clientes_contactos(clientes_id "
+                + "BIGINT(5) NOT NULL,contactos_id BIGINT(9) NOT NULL,CONSTRAINT"
+                + " pk_clientes_contactos PRIMARY KEY(clientes_id,contactos_id))";
+        try {
+            con = getConnection();
+            con.setAutoCommit(false);
+            for (String sqlCreateTable : tablas) {
+                stm = con.prepareStatement(sqlCreateTable);
+                stm.execute();
+            }
+            stm.close();
+            con.commit();
+        } catch (SQLException ex) {
+            LOG.error("SQLException in the method createTables 1ª of 3 "
+                    + "SQLException catcher ", ex);
+            try {
+                if (con != null) {
+                    con.rollback();
+                }
+            } catch (SQLException exx) {
+                LOG.error("SQLException in the method createTables 2ª "
+                        + "of 3 SQLException catcher ", exx);
+            }
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                LOG.error("SQLException in the method createTables 3ª "
+                        + "of 3 SQLException catcher ", ex);
+            }
+        }
     }
 
 }

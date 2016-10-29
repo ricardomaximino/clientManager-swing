@@ -3,7 +3,6 @@ package es.seas.feedback.cliente.manager;
 import es.seas.feedback.cliente.manager.control.ClienteControl;
 import es.seas.feedback.cliente.manager.model.Provincia;
 import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAO;
-import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAOImpl;
 import es.seas.feedback.cliente.manager.model.dao.datos.LectorEscritor;
 import es.seas.feedback.cliente.manager.model.service.ServicioCliente;
 import es.seas.feedback.cliente.manager.view.VentanaPrincipal;
@@ -17,6 +16,7 @@ import es.seas.feedback.cliente.manager.control.UsuarioControl;
 import es.seas.feedback.cliente.manager.model.Cliente;
 import es.seas.feedback.cliente.manager.model.Usuario;
 import es.seas.feedback.cliente.manager.model.dao.jdbc.ClienteJDBCDAO;
+import es.seas.feedback.cliente.manager.model.dao.jdbc.ProvinciaJDBCDAO;
 import es.seas.feedback.cliente.manager.model.dao.jdbc.UsuarioJDBCDAO;
 import es.seas.feedback.cliente.manager.model.service.ServicioUsuario;
 import es.seas.feedback.cliente.manager.view.Controlable;
@@ -81,11 +81,11 @@ public class ClienteManager {
      */
     private void setProvincias() {
         //Provincias
-        ProvinciaDAO provDAO = new ProvinciaDAOImpl();
+        ProvinciaDAO provDAO = new ProvinciaJDBCDAO();
         mapProvincias = new LinkedHashMap<>();
         List<Provincia> listProvincias = provDAO.getLista();
         if (listProvincias.size() > 0) {
-            for (Provincia prov : provDAO.getLista()) {
+            for (Provincia prov : provDAO.getLista()) {                
                 mapProvincias.put(prov.getNombre(), prov);
             }
         } else {

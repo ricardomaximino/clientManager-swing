@@ -18,43 +18,53 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Esta classe tiene la misma funcionalidades que el UsuarioDAO
+ * Esta classe tiene la misma funcionalidades y implementa la misma interfaz 
+ * que el UsuarioDAO, la única diferencia es que esta clase utiliza JDBC y la
+ * clase UsuarioDAO utiliza Hibernate.
  *
- * @author Ricardo
+ * @author Ricardo Maximino<br><br>
  */
 public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
+
     private static final Logger LOG = LoggerFactory.getLogger(UsuarioJDBCDAO.class);
 
     Connection con;
     PreparedStatement stm;
     ResultSet rs;
+    ResultSet rsuc;
     ResultSet rsc;
 
-    public UsuarioJDBCDAO(){
-        LOG.info("This class starts");
+    public UsuarioJDBCDAO() {
+        LOG.info("This class starts.");
+        createTables();
     }
+
     private Connection getConnection() {
         return ConnectionFactory.getConnection();
     }
 
     /**
-     * Este metodo es para añadir un nuevo registro en la base de datos 
+     * Este metodo es para añadir un nuevo registro en la base de datos
      * representando un es.seas.feedback.cliente.manager.model.Usuario.<br>
-     * 
-     * @param usuario es del tipo es.seas.feedback.cliente.manager.model.Usuario.
-     * @return retorna un valor del tipo boolean, true si el usuario haya sido 
+     *
+     * @param usuario es del tipo
+     * es.seas.feedback.cliente.manager.model.Usuario.
+     * @return retorna un valor del tipo boolean, true si el usuario haya sido
      * añadido a la base de datos y false si no.
-     * 
-     * <p>El metodo cria un PrepareStatement de la seguinte manera:</p>
+     *
+     * <p>
+     * El metodo cria un PrepareStatement de la seguinte manera:</p>
      * <ul>
      * <li>String sql = "INSERT INTO usuarios (nif,nombre,primerApellido,"<br>
-                + "segundoApellido,fechaNacimiento,fechaPrimeraAlta,"<br>
-                + "fechaUltimaBaja,activo,provincia,localidade,direccion,"<br>
-                + "numero,cp,nota,contraseña,controle)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";</li>
-     *<li>stm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</li>
+     * + "segundoApellido,fechaNacimiento,fechaPrimeraAlta,"<br>
+     * + "fechaUltimaBaja,activo,provincia,localidade,direccion,"<br>
+     * + "numero,cp,nota,contraseña,controle)VALUES
+     * (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";</li>
+     * <li>stm = con.prepareStatement(sql,
+     * Statement.RETURN_GENERATED_KEYS);</li>
      * </ul>
      * luego configura los valores utilizando el usuario introducido como
-     * parametro. 
+     * parametro.
      */
     @Override
     public boolean añadirNuevoRegistro(Usuario usuario) {
@@ -66,7 +76,8 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         String sql = "INSERT INTO usuarios (nif,nombre,primerApellido,"
                 + "segundoApellido,fechaNacimiento,fechaPrimeraAlta,"
                 + "fechaUltimaBaja,activo,provincia,localidade,direccion,"
-                + "numero,cp,nota,contraseña,controle)VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+                + "numero,cp,nota,contraseña,controle)"
+                + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
         boolean resultado = false;
         /*
         con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
@@ -75,48 +86,48 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         rs = stm.getGeneratedKeys(); para conseguir un ResultSet con las 
         primeryKeys generadas por la base de datos en el mismo ordem de 
         inserción.
-        */
+         */
         try {
             stm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stm.setString(1, usuario.getNif());
             stm.setString(2, usuario.getNombre());
             stm.setString(3, usuario.getPrimerApellido());
             stm.setString(4, usuario.getSegundoApellido());
-            
+
             //nuevo Fechas
-            if(usuario.getFechaNacimiento()!=null){
+            if (usuario.getFechaNacimiento() != null) {
                 stm.setDate(5, Date.valueOf(usuario.getFechaNacimiento()));
-            }else{
+            } else {
                 stm.setDate(5, null);
             }
-            if(usuario.getFechaPrimeraAlta()!=null){
+            if (usuario.getFechaPrimeraAlta() != null) {
                 stm.setDate(6, Date.valueOf(usuario.getFechaPrimeraAlta()));
-            }else{
+            } else {
                 stm.setDate(6, Date.valueOf(LocalDate.now()));
             }
-            if(usuario.getFechaUltimaBaja()!=null){
+            if (usuario.getFechaUltimaBaja() != null) {
                 stm.setDate(7, Date.valueOf(usuario.getFechaUltimaBaja()));
-            }else{
+            } else {
                 stm.setDate(7, null);
             }
-            
+
             stm.setBoolean(8, usuario.isActivo());
-            
+
             //nuevo Direccion
-            if(usuario.getDirecion()!= null){
+            if (usuario.getDirecion() != null) {
                 stm.setString(9, usuario.getDirecion().getProvincia());
                 stm.setString(10, usuario.getDirecion().getLocalidade());
                 stm.setString(11, usuario.getDirecion().getDireccion());
                 stm.setString(12, usuario.getDirecion().getNumero());
                 stm.setString(13, usuario.getDirecion().getCp());
                 stm.setString(14, usuario.getDirecion().getNota());
-            }else{
+            } else {
                 stm.setString(9, null);
                 stm.setString(10, null);
                 stm.setString(11, null);
                 stm.setString(12, null);
                 stm.setString(13, null);
-                stm.setString(14, null);                
+                stm.setString(14, null);
             }
             stm.setString(15, usuario.getContraseña());
             stm.setInt(16, usuario.getLevel());
@@ -124,7 +135,7 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                 stm.executeUpdate no devuelve la primeryKey generada por la 
                 base de datos, este metodo devuelve un int informando el numero 
                 de lineas que hayan sido afectadas en la base de datos.
-            */
+             */
             usuarioId = stm.executeUpdate();
             resultado = usuarioId > 0;
             rs = stm.getGeneratedKeys();
@@ -135,7 +146,7 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                     stm = con.prepareStatement("INSERT INTO contactos "
                             + "(descripcion,contacto) VALUES(?,?)",
                             Statement.RETURN_GENERATED_KEYS);
-                    
+
                     stm.setString(1, c.getDescripcion());
                     stm.setString(2, c.getContacto());
                     contactoId = stm.executeUpdate();
@@ -182,24 +193,26 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
     }
 
     /**
-     * Este metodo es para añadir un nuevo registro en la base de datos 
+     * Este metodo es para añadir un nuevo registro en la base de datos
      * representando un es.seas.feedback.cliente.manager.model.Usuario.<br>
-     * 
-     * @param usuario es del tipo es.seas.feedback.cliente.manager.model.Usuario.
-     * @return retorna un valor del tipo boolean, true si el usuario haya sido 
+     *
+     * @param usuario es del tipo
+     * es.seas.feedback.cliente.manager.model.Usuario.
+     * @return retorna un valor del tipo boolean, true si el usuario haya sido
      * añadido a la base de datos y false si no.
-     * 
-     * <p>El metodo cria un PrepareStatement de la seguinte manera:</p>
+     *
+     * <p>
+     * El metodo cria un PrepareStatement de la seguinte manera:</p>
      * <ul>
-     * <li>String sql = "UPDATE usuarios SET nombre=?,primerApellido=?,"
-                + "segundoApellido=?,fechaNacimiento=?,fechaPrimeraAlta=?,"
-                + "fechaUltimaBaja=?,activo=?,provincia=?,localidade=?,"
-                + "direccion=?,numero=?,cp=?,nota=? WHERE id=?";</li>
-     *<li>stm = con.prepareStatement(sql);</li>
+     * <li>String sql = "UPDATE usuarios SET nombre=?,primerApellido=?," +
+     * "segundoApellido=?,fechaNacimiento=?,fechaPrimeraAlta=?," +
+     * "fechaUltimaBaja=?,activo=?,provincia=?,localidade=?," +
+     * "direccion=?,numero=?,cp=?,nota=? WHERE id=?";</li>
+     * <li>stm = con.prepareStatement(sql);</li>
      * </ul>
      * luego configura los valores utilizando el usuario introducido como
-     * parametro. 
-     */    
+     * parametro.
+     */
     @Override
     public boolean atualizarRegistro(Usuario usuario) {
         con = getConnection();
@@ -215,47 +228,47 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
             stm.setString(1, usuario.getNombre());
             stm.setString(2, usuario.getPrimerApellido());
             stm.setString(3, usuario.getSegundoApellido());
-            
+
             //nuevo Fechas
-            if(usuario.getFechaNacimiento()!=null){
+            if (usuario.getFechaNacimiento() != null) {
                 stm.setDate(4, Date.valueOf(usuario.getFechaNacimiento()));
-            }else{
+            } else {
                 stm.setDate(4, null);
             }
-            if(usuario.getFechaPrimeraAlta()!=null){
+            if (usuario.getFechaPrimeraAlta() != null) {
                 stm.setDate(5, Date.valueOf(usuario.getFechaPrimeraAlta()));
-            }else{
+            } else {
                 stm.setDate(5, null);
             }
-            if(usuario.getFechaUltimaBaja()!=null){
+            if (usuario.getFechaUltimaBaja() != null) {
                 stm.setDate(6, Date.valueOf(usuario.getFechaUltimaBaja()));
-            }else{
+            } else {
                 stm.setDate(6, null);
             }
-            
+
             stm.setBoolean(7, usuario.isActivo());
-            
+
             //nuevo Direccion
-            if(usuario.getDirecion()!= null){
+            if (usuario.getDirecion() != null) {
                 stm.setString(8, usuario.getDirecion().getProvincia());
                 stm.setString(9, usuario.getDirecion().getLocalidade());
                 stm.setString(10, usuario.getDirecion().getDireccion());
                 stm.setString(11, usuario.getDirecion().getNumero());
                 stm.setString(12, usuario.getDirecion().getCp());
                 stm.setString(13, usuario.getDirecion().getNota());
-            }else{
+            } else {
                 stm.setString(8, null);
                 stm.setString(9, null);
                 stm.setString(10, null);
                 stm.setString(11, null);
                 stm.setString(12, null);
-                stm.setString(13, null);                
+                stm.setString(13, null);
             }
             stm.setString(14, usuario.getContraseña());
             stm.setInt(15, usuario.getLevel());
-            
+
             stm.setLong(16, usuario.getId());
-            
+
             resultado = stm.executeUpdate() > 0;
             if (usuario.getContactos().size() > 0) {
                 for (Contacto c : usuario.getContactos()) {
@@ -263,7 +276,7 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                         stm = con.prepareStatement("INSERT INTO contactos "
                                 + "(descripcion,contacto) VALUES(?,?)",
                                 Statement.RETURN_GENERATED_KEYS);
-                        
+
                         stm.setString(1, c.getDescripcion());
                         stm.setString(2, c.getContacto());
                         stm.executeUpdate();
@@ -310,13 +323,16 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         }
         return resultado;
     }
+
     /**
      * Este metodo configura la columna activo = false del usuario que tenga el
      * nif introducido por parametro.
+     *
      * @param usuario del tipo es.seas.feedback.cliente.manager.model.Usuario.
      * @return del tipo boolean, true si el nif introducido exitiera en la base
      * de datos y false si el nif no haya sido encontrado.
-     * <p>El metodo llamara el metodo darDeBaja(String nif) y pasará
+     * <p>
+     * El metodo llamara el metodo darDeBaja(String nif) y pasará
      * usuario.getNif() como parametro.</p>
      */
     @Override
@@ -327,6 +343,7 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
     /**
      * Este metodo configura la columna activo = false del usuario que tenga el
      * nif introducido por parametro.
+     *
      * @param nif del tipo String.
      * @return del tipo boolean, true si el nif introducido exitiera en la base
      * de datos y false si el nif no haya sido encontrado.
@@ -368,15 +385,17 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         return resultado;
     }
 
-        /**
+    /**
      * Este metodo borra el registro el la base de datos que tengo el nif igual
      * al parametro introducido.
+     *
      * @param usuario del tipo es.seas.feedback.cliente.manager.model.Usuario.
      * @return del tipo boolean, retorna true si haya sido encontrado algun
      * registro con el nif igual al parametro, y false si no haya encotrado
      * ningún.
-     * <p>Este metodo llamará el metodo borrarRegistro(String nif)
-     * y pasará usuario.getNif() como parametro.</p>
+     * <p>
+     * Este metodo llamará el metodo borrarRegistro(String nif) y pasará
+     * usuario.getNif() como parametro.</p>
      */
     @Override
     public boolean borrarRegistro(Usuario usuario) {
@@ -386,6 +405,7 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
     /**
      * Este metodo borra el registro el la base de datos que tengo el nif igual
      * al parametro introducido.
+     *
      * @param nif del tipo String.
      * @return del tipo boolean, retorna true si haya sido encontrado algun
      * registro con el nif igual al parametro, y false si no haya encotrado
@@ -429,7 +449,8 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
     /**
      * Este metodo lista todos los usuarios registrados en la base de datos y
      * retorna un List&lt;Usuario&gt;.
-     * @return del tipo 
+     *
+     * @return del tipo
      * java.util.List&lt;es.seas.feedback.cliente.manager.model.Usuario&gt;.
      */
     @Override
@@ -438,60 +459,58 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         con = getConnection();
         stm = null;
         rs = null;
+        rsuc = null;
+        rsc = null;
         String sql = "SELECT * FROM usuarios ORDER BY nombre";
         List<Usuario> lista = new ArrayList<>();
         try {
             stm = con.prepareStatement(sql);
             rs = stm.executeQuery();
-            while ( rs.next()) {
+            while (rs.next()) {
                 usuario = new Usuario();
                 usuario.setId(rs.getLong("id"));
                 usuario.setNif(rs.getString("nif"));
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setPrimerApellido(rs.getString("primerApellido"));
                 usuario.setSegundoApellido(rs.getString("segundoApellido"));
-                
-                 //nuevo
+
+                //nuevo
                 Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
-                if(sqlFechaNacimiento != null){
+                if (sqlFechaNacimiento != null) {
                     usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaNacimiento(null);
-                }               
+                }
                 Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
-                if(sqlFechaPrimeraAlta != null){
+                if (sqlFechaPrimeraAlta != null) {
                     usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaPrimeraAlta(null);
-                }                
+                }
                 Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
-                if(sqlFechaUltimaBaja != null){
+                if (sqlFechaUltimaBaja != null) {
                     usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaUltimaBaja(null);
-                }            
-                
+                }
+
                 usuario.setActivo(rs.getBoolean("activo"));
                 usuario.setDirecion(new Direccion(rs.getString("provincia"),
                         rs.getString("localidade"), rs.getString("direccion"),
                         rs.getString("numero"), rs.getString("cp"),
                         rs.getString("nota")));
-                
+
                 usuario.setContraseña(rs.getString("contraseña"));
                 usuario.setLevel(rs.getInt("controle"));
-                
+
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
-                rsc = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
-                while (rsc.next()) {
-                    contactosIds.add(rsc.getLong(1));
-                }
-                for (Long l : contactosIds) {
+                rsuc = stm.executeQuery();
+                while (rsuc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos "
                             + "WHERE id=?");
-                    stm.setLong(1, l);
+                    stm.setLong(1, rsuc.getLong(1));
                     rsc = stm.executeQuery();
                     rsc.first();
                     Contacto contacto = new Contacto(rsc.getString("descripcion"),
@@ -502,8 +521,6 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                 }
                 lista.add(usuario);
             }
-            if(rsc != null) rsc.close();
-            if(rs != null) rs.close();
             stm.close();
         } catch (SQLException ex) {
             LOG.error("SQLException in the method listarRegistros 1ª of 3 "
@@ -532,9 +549,10 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
     /**
      * Este metodo busca en la base de datos un registro que tengo el nif igual
      * al parametro introducido.
+     *
      * @param nif del tipo String.
-     * @return del tipo es.seas.feedback.cliente.manager.model.Usuario, 
-     * y en caso de que no haya tal registro se retornará null.
+     * @return del tipo es.seas.feedback.cliente.manager.model.Usuario, y en
+     * caso de que no haya tal registro se retornará null.
      */
     @Override
     public Usuario buscarRegistroPorNIF(String nif) {
@@ -542,6 +560,8 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         con = getConnection();
         stm = null;
         rs = null;
+        rsuc = null;
+        rsc = null;
         String sql = "SELECT * FROM usuarios WHERE nif=?";
         try {
             stm = con.prepareStatement(sql);
@@ -554,56 +574,51 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setPrimerApellido(rs.getString("primerApellido"));
                 usuario.setSegundoApellido(rs.getString("segundoApellido"));
-                
+
                 //nuevo
                 Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
-                if(sqlFechaNacimiento != null){
+                if (sqlFechaNacimiento != null) {
                     usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaNacimiento(null);
-                }               
+                }
                 Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
-                if(sqlFechaPrimeraAlta != null){
+                if (sqlFechaPrimeraAlta != null) {
                     usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaPrimeraAlta(null);
-                }                
+                }
                 Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
-                if(sqlFechaUltimaBaja != null){
+                if (sqlFechaUltimaBaja != null) {
                     usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaUltimaBaja(null);
                 }
-                
+
                 usuario.setActivo(rs.getBoolean("activo"));
                 usuario.setDirecion(new Direccion(rs.getString("provincia"),
                         rs.getString("localidade"), rs.getString("direccion"),
                         rs.getString("numero"), rs.getString("cp"),
                         rs.getString("nota")));
-                
+
                 usuario.setContraseña(rs.getString("contraseña"));
                 usuario.setLevel(rs.getInt("controle"));
-                
+
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
-                while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
+                rsuc = stm.executeQuery();
+                while (rsuc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rsuc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     System.out.println("Contacto id in PORNIF: " + contacto.getId());
                     usuario.getContactos().add(contacto);
                 }
-                rs.close();
             }
             stm.close();
         } catch (SQLException ex) {
@@ -630,12 +645,13 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         return usuario;
     }
 
-        /**
+    /**
      * Este metodo busca en la base de datos un registro que tengo el nif igual
      * al parametro introducido.
+     *
      * @param id del tipo long.
-     * @return del tipo es.seas.feedback.cliente.manager.model.Usuario, 
-     * y en caso de que no haya tal registro se retornará null.
+     * @return del tipo es.seas.feedback.cliente.manager.model.Usuario, y en
+     * caso de que no haya tal registro se retornará null.
      */
     @Override
     public Usuario buscarRegistroPorID(long id) {
@@ -655,36 +671,36 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setPrimerApellido(rs.getString("primerApellido"));
                 usuario.setSegundoApellido(rs.getString("segundoApellido"));
-                
+
                 //nuevo
                 Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
-                if(sqlFechaNacimiento != null){
+                if (sqlFechaNacimiento != null) {
                     usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaNacimiento(null);
-                }               
+                }
                 Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
-                if(sqlFechaPrimeraAlta != null){
+                if (sqlFechaPrimeraAlta != null) {
                     usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaPrimeraAlta(null);
-                }                
+                }
                 Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
-                if(sqlFechaUltimaBaja != null){
+                if (sqlFechaUltimaBaja != null) {
                     usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaUltimaBaja(null);
                 }
-                
+
                 usuario.setActivo(rs.getBoolean("activo"));
                 usuario.setDirecion(new Direccion(rs.getString("provincia"),
                         rs.getString("localidade"), rs.getString("direccion"),
                         rs.getString("numero"), rs.getString("cp"),
                         rs.getString("nota")));
-                
+
                 usuario.setContraseña(rs.getString("contraseña"));
                 usuario.setLevel(rs.getInt("controle"));
-                
+
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
@@ -733,12 +749,14 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
     /**
      * Este metodo retorna una lista de usuario que tengan el primerApellido
      * igual al parametro(caseInsensitive).
+     *
      * @param primerApellido del tipo String.
      * @return del tipo java.util.List
      * &lt;es.seas.feedback.cliente.manager.model.Usuario&gt;.
-     * 
-     * <p>En caso de que no se encontre ningún usuario con esta búsqueda,
-     * se retornará una lista vacia.</p>
+     *
+     * <p>
+     * En caso de que no se encontre ningún usuario con esta búsqueda, se
+     * retornará una lista vacia.</p>
      */
     @Override
     public List<Usuario> buscarRegistrosPorPrimerApellido(String primerApellido) {
@@ -746,6 +764,8 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         con = getConnection();
         stm = null;
         rs = null;
+        rsuc = null;
+        rsc = null;
         String sql = "SELECT * FROM usuarios WHERE primerApellido=? ORDER BY nombre";
         List<Usuario> lista = new ArrayList<>();
         try {
@@ -759,57 +779,52 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setPrimerApellido(rs.getString("primerApellido"));
                 usuario.setSegundoApellido(rs.getString("segundoApellido"));
-                
+
                 //nuevo
                 Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
-                if(sqlFechaNacimiento != null){
+                if (sqlFechaNacimiento != null) {
                     usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaNacimiento(null);
-                }               
+                }
                 Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
-                if(sqlFechaPrimeraAlta != null){
+                if (sqlFechaPrimeraAlta != null) {
                     usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaPrimeraAlta(null);
-                }                
+                }
                 Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
-                if(sqlFechaUltimaBaja != null){
+                if (sqlFechaUltimaBaja != null) {
                     usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaUltimaBaja(null);
                 }
-                
+
                 usuario.setActivo(rs.getBoolean("activo"));
                 usuario.setDirecion(new Direccion(rs.getString("provincia"),
                         rs.getString("localidade"), rs.getString("direccion"),
                         rs.getString("numero"), rs.getString("cp"),
                         rs.getString("nota")));
-                
+
                 usuario.setContraseña(rs.getString("contraseña"));
                 usuario.setLevel(rs.getInt("controle"));
-                
+
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
+                rsuc = stm.executeQuery();
                 while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rsuc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     usuario.getContactos().add(contacto);
                 }
                 lista.add(usuario);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
             LOG.error("SQLException in the method buscarRegistrosPorPrimerApellido 1ª of 3 "
@@ -835,15 +850,17 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         return lista;
     }
 
-        /**
+    /**
      * Este metodo retorna una lista de usuario que tengan el segundoApellido
      * igual al parametro(caseInsensitive).
+     *
      * @param segundoApellido del tipo String.
      * @return del tipo java.util.List
      * &lt;es.seas.feedback.cliente.manager.model.Usuario&gt;.
-     * 
-     * <p>En caso de que no se encontre ningún usuario con esta búsqueda,
-     * se retornará una lista vacia.</p>
+     *
+     * <p>
+     * En caso de que no se encontre ningún usuario con esta búsqueda, se
+     * retornará una lista vacia.</p>
      */
     @Override
     public List<Usuario> buscarRegistrosPorSegundoApellido(String segundoApellido) {
@@ -851,6 +868,8 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         con = getConnection();
         stm = null;
         rs = null;
+        rsuc = null;
+        rsc = null;
         String sql = "SELECT * FROM usuarios WHERE segundoApellido=? ORDER BY nombre";
         List<Usuario> lista = new ArrayList<>();
         try {
@@ -864,57 +883,52 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setPrimerApellido(rs.getString("primerApellido"));
                 usuario.setSegundoApellido(rs.getString("segundoApellido"));
-                 
+
                 //nuevo
                 Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
-                if(sqlFechaNacimiento != null){
+                if (sqlFechaNacimiento != null) {
                     usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaNacimiento(null);
-                }               
+                }
                 Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
-                if(sqlFechaPrimeraAlta != null){
+                if (sqlFechaPrimeraAlta != null) {
                     usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaPrimeraAlta(null);
-                }                
+                }
                 Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
-                if(sqlFechaUltimaBaja != null){
+                if (sqlFechaUltimaBaja != null) {
                     usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaUltimaBaja(null);
                 }
-                
+
                 usuario.setActivo(rs.getBoolean("activo"));
                 usuario.setDirecion(new Direccion(rs.getString("provincia"),
                         rs.getString("localidade"), rs.getString("direccion"),
                         rs.getString("numero"), rs.getString("cp"),
                         rs.getString("nota")));
-                
+
                 usuario.setContraseña(rs.getString("contraseña"));
                 usuario.setLevel(rs.getInt("controle"));
-                
+
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
+                rsuc = stm.executeQuery();
                 while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rsuc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     usuario.getContactos().add(contacto);
                 }
                 lista.add(usuario);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
             LOG.error("SQLException in the method buscarRegistrosPorSegundoApellido 1ª of 3 "
@@ -940,15 +954,17 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         return lista;
     }
 
-        /**
-     * Este metodo retorna una lista de usuario que tengan el nombre
-     * igual al parametro(caseInsensitive).
+    /**
+     * Este metodo retorna una lista de usuario que tengan el nombre igual al
+     * parametro(caseInsensitive).
+     *
      * @param nombre del tipo String.
      * @return del tipo java.util.List
      * &lt;es.seas.feedback.cliente.manager.model.Usuario&gt;.
-     * 
-     * <p>En caso de que no se encontre ningún usuario con esta búsqueda,
-     * se retornará una lista vacia.</p>
+     *
+     * <p>
+     * En caso de que no se encontre ningún usuario con esta búsqueda, se
+     * retornará una lista vacia.</p>
      */
     @Override
     public List<Usuario> buscarRegistrosPorNombre(String nombre) {
@@ -956,6 +972,8 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         con = getConnection();
         stm = null;
         rs = null;
+        rsuc = null;
+        rsc = null;
         String sql = "SELECT * FROM usuarios WHERE nombre=? ORDER BY primerApellido";
         List<Usuario> lista = new ArrayList<>();
         try {
@@ -969,57 +987,52 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setPrimerApellido(rs.getString("primerApellido"));
                 usuario.setSegundoApellido(rs.getString("segundoApellido"));
-                
+
                 //nuevo
                 Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
-                if(sqlFechaNacimiento != null){
+                if (sqlFechaNacimiento != null) {
                     usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaNacimiento(null);
-                }               
+                }
                 Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
-                if(sqlFechaPrimeraAlta != null){
+                if (sqlFechaPrimeraAlta != null) {
                     usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaPrimeraAlta(null);
-                }                
+                }
                 Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
-                if(sqlFechaUltimaBaja != null){
+                if (sqlFechaUltimaBaja != null) {
                     usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaUltimaBaja(null);
                 }
-                
+
                 usuario.setActivo(rs.getBoolean("activo"));
                 usuario.setDirecion(new Direccion(rs.getString("provincia"),
                         rs.getString("localidade"), rs.getString("direccion"),
                         rs.getString("numero"), rs.getString("cp"),
                         rs.getString("nota")));
-                
+
                 usuario.setContraseña(rs.getString("contraseña"));
                 usuario.setLevel(rs.getInt("controle"));
-                
+
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
-                while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
+                rsuc = stm.executeQuery();
+                while (rsuc.next()) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rsuc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     usuario.getContactos().add(contacto);
                 }
                 lista.add(usuario);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
             LOG.error("SQLException in the method buscarRegistrosPorNombre 1ª of 3 "
@@ -1048,11 +1061,13 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
     /**
      * Este metodo retorna una lista de usuario que tengan la columna activo
      * igual a false.
+     *
      * @return del tipo java.util.List
      * &lt;es.seas.feedback.cliente.manager.model.Usuario&gt;.
-     * 
-     * <p>En caso de que no se encontre ningún usuario con esta búsqueda,
-     * se retornará una lista vacia.</p>
+     *
+     * <p>
+     * En caso de que no se encontre ningún usuario con esta búsqueda, se
+     * retornará una lista vacia.</p>
      */
     @Override
     public List<Usuario> buscarRegistrosDadoDeBaja() {
@@ -1060,6 +1075,8 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         con = getConnection();
         stm = null;
         rs = null;
+        rsuc = null;
+        rsc = null;
         String sql = "SELECT * FROM usuarios WHERE activo=? ORDER BY nombre";
         List<Usuario> lista = new ArrayList<>();
         try {
@@ -1073,161 +1090,52 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setPrimerApellido(rs.getString("primerApellido"));
                 usuario.setSegundoApellido(rs.getString("segundoApellido"));
-                
-                //nuevo
-                Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
-                if(sqlFechaNacimiento != null){
-                    usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
-                }else{
-                    usuario.setFechaNacimiento(null);
-                }               
-                Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
-                if(sqlFechaPrimeraAlta != null){
-                    usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
-                }else{
-                    usuario.setFechaPrimeraAlta(null);
-                }                
-                Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
-                if(sqlFechaUltimaBaja != null){
-                    usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
-                }else{
-                    usuario.setFechaUltimaBaja(null);
-                }
-                
-                usuario.setActivo(rs.getBoolean("activo"));
-                usuario.setDirecion(new Direccion(rs.getString("provincia"),
-                        rs.getString("localidade"), rs.getString("direccion"),
-                        rs.getString("numero"), rs.getString("cp"),
-                        rs.getString("nota")));
-                
-                usuario.setContraseña(rs.getString("contraseña"));
-                usuario.setLevel(rs.getInt("controle"));
-                
-                stm = con.prepareStatement("SELECT contactos_id FROM "
-                        + "usuarios_contactos WHERE usuarios_id=?");
-                stm.setLong(1, usuario.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
-                while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
-                    stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
-                    usuario.getContactos().add(contacto);
-                }
-                lista.add(usuario);
-            }
-            rs.close();
-            stm.close();
-        } catch (SQLException ex) {
-            LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 1ª of 3 "
-                    + "SQLException catcher ", ex);
-            try {
-                if (con != null) {
-                    con.rollback();
-                }
-            } catch (SQLException exx) {
-                LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 2ª "
-                        + "of 3 SQLException catcher ", exx);
-            }
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException ex) {
-                LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 3ª "
-                        + "of 3 SQLException catcher ", ex);
-            }
-        }
-        return lista;
-    }
 
-        /**
-     * Este metodo retorna una lista de usuario que tengan la columna activo
-     * igual a true.
-     * @return del tipo java.util.List
-     * &lt;es.seas.feedback.cliente.manager.model.Usuario&gt;.
-     * 
-     * <p>En caso de que no se encontre ningún usuario con esta búsqueda,
-     * se retornará una lista vacia.</p>
-     */
-    @Override
-    public List<Usuario> buscarRegistrosDadoDeAlta() {
-        Usuario usuario;
-        con = getConnection();
-        stm = null;
-        rs = null;
-        String sql = "SELECT * FROM usuarios WHERE activo=? ORDER BY nombre";
-        List<Usuario> lista = new ArrayList<>();
-        try {
-            stm = con.prepareStatement(sql);
-            stm.setBoolean(1, true);
-            rs = stm.executeQuery();
-            while (rs != null && rs.next()) {
-                usuario = new Usuario();
-                usuario.setId(rs.getLong("id"));
-                usuario.setNif(rs.getString("nif"));
-                usuario.setNombre(rs.getString("nombre"));
-                usuario.setPrimerApellido(rs.getString("primerApellido"));
-                usuario.setSegundoApellido(rs.getString("segundoApellido"));
-                
                 //nuevo
                 Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
-                if(sqlFechaNacimiento != null){
+                if (sqlFechaNacimiento != null) {
                     usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaNacimiento(null);
-                }               
+                }
                 Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
-                if(sqlFechaPrimeraAlta != null){
+                if (sqlFechaPrimeraAlta != null) {
                     usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaPrimeraAlta(null);
-                }                
+                }
                 Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
-                if(sqlFechaUltimaBaja != null){
+                if (sqlFechaUltimaBaja != null) {
                     usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
-                }else{
+                } else {
                     usuario.setFechaUltimaBaja(null);
                 }
-                
+
                 usuario.setActivo(rs.getBoolean("activo"));
                 usuario.setDirecion(new Direccion(rs.getString("provincia"),
                         rs.getString("localidade"), rs.getString("direccion"),
                         rs.getString("numero"), rs.getString("cp"),
                         rs.getString("nota")));
-                
+
                 usuario.setContraseña(rs.getString("contraseña"));
                 usuario.setLevel(rs.getInt("controle"));
-                
+
                 stm = con.prepareStatement("SELECT contactos_id FROM "
                         + "usuarios_contactos WHERE usuarios_id=?");
                 stm.setLong(1, usuario.getId());
-                rs = stm.executeQuery();
-                List<Long> contactosIds = new ArrayList<>();
+                rsuc = stm.executeQuery();
                 while (rs.next()) {
-                    contactosIds.add(rs.getLong(1));
-                }
-                for (Long l : contactosIds) {
                     stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
-                    stm.setLong(1, l);
-                    rs = stm.executeQuery();
-                    rs.first();
-                    Contacto contacto = new Contacto(rs.getString("descripcion"),
-                            rs.getString("contacto"));
-                    contacto.setId(rs.getLong("id"));
+                    stm.setLong(1, rsuc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
                     usuario.getContactos().add(contacto);
                 }
                 lista.add(usuario);
             }
-            rs.close();
             stm.close();
         } catch (SQLException ex) {
             LOG.error("SQLException in the method buscarRegistrosDadoDeBaja 1ª of 3 "
@@ -1254,14 +1162,119 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
     }
 
     /**
-     * Este metodo retorna una lista de usuarios que tengan su cumpleaños
-     * en el mes pasado por parametro.
+     * Este metodo retorna una lista de usuario que tengan la columna activo
+     * igual a true.
+     *
+     * @return del tipo java.util.List
+     * &lt;es.seas.feedback.cliente.manager.model.Usuario&gt;.
+     *
+     * <p>
+     * En caso de que no se encontre ningún usuario con esta búsqueda, se
+     * retornará una lista vacia.</p>
+     */
+    @Override
+    public List<Usuario> buscarRegistrosDadoDeAlta() {
+        Usuario usuario;
+        con = getConnection();
+        stm = null;
+        rs = null;
+        rsuc = null;
+        rsc = null;
+        String sql = "SELECT * FROM usuarios WHERE activo=? ORDER BY nombre";
+        List<Usuario> lista = new ArrayList<>();
+        try {
+            stm = con.prepareStatement(sql);
+            stm.setBoolean(1, true);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                usuario = new Usuario();
+                usuario.setId(rs.getLong("id"));
+                usuario.setNif(rs.getString("nif"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setPrimerApellido(rs.getString("primerApellido"));
+                usuario.setSegundoApellido(rs.getString("segundoApellido"));
+
+                //nuevo
+                Date sqlFechaNacimiento = rs.getDate("fechaNacimiento");
+                if (sqlFechaNacimiento != null) {
+                    usuario.setFechaNacimiento(sqlFechaNacimiento.toLocalDate());
+                } else {
+                    usuario.setFechaNacimiento(null);
+                }
+                Date sqlFechaPrimeraAlta = rs.getDate("fechaPrimeraAlta");
+                if (sqlFechaPrimeraAlta != null) {
+                    usuario.setFechaPrimeraAlta(sqlFechaPrimeraAlta.toLocalDate());
+                } else {
+                    usuario.setFechaPrimeraAlta(null);
+                }
+                Date sqlFechaUltimaBaja = rs.getDate("fechaUltimaBaja");
+                if (sqlFechaUltimaBaja != null) {
+                    usuario.setFechaUltimaBaja(sqlFechaUltimaBaja.toLocalDate());
+                } else {
+                    usuario.setFechaUltimaBaja(null);
+                }
+
+                usuario.setActivo(rs.getBoolean("activo"));
+                usuario.setDirecion(new Direccion(rs.getString("provincia"),
+                        rs.getString("localidade"), rs.getString("direccion"),
+                        rs.getString("numero"), rs.getString("cp"),
+                        rs.getString("nota")));
+
+                usuario.setContraseña(rs.getString("contraseña"));
+                usuario.setLevel(rs.getInt("controle"));
+
+                stm = con.prepareStatement("SELECT contactos_id FROM "
+                        + "usuarios_contactos WHERE usuarios_id=?");
+                stm.setLong(1, usuario.getId());
+                rsuc = stm.executeQuery();
+                while (rsuc.next()) {
+                    stm = con.prepareStatement("SELECT * FROM contactos WHERE id=?");
+                    stm.setLong(1, rsuc.getLong(1));
+                    rsc = stm.executeQuery();
+                    rsc.first();
+                    Contacto contacto = new Contacto(rsc.getString("descripcion"),
+                            rsc.getString("contacto"));
+                    contacto.setId(rsc.getLong("id"));
+                    usuario.getContactos().add(contacto);
+                }
+                lista.add(usuario);
+            }
+            stm.close();
+        } catch (SQLException ex) {
+            LOG.error("SQLException in the method buscarRegistrosDadoDeAlta 1ª of 3 "
+                    + "SQLException catcher ", ex);
+            try {
+                if (con != null) {
+                    con.rollback();
+                }
+            } catch (SQLException exx) {
+                LOG.error("SQLException in the method buscarRegistrosDadoDeAlta 2ª "
+                        + "of 3 SQLException catcher ", exx);
+            }
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                LOG.error("SQLException in the method buscarRegistrosDadoDeAlta 3ª "
+                        + "of 3 SQLException catcher ", ex);
+            }
+        }
+        return lista;
+    }
+
+    /**
+     * Este metodo retorna una lista de usuarios que tengan su cumpleaños en el
+     * mes pasado por parametro.
+     *
      * @param mes del tipo java.time.Month;
      * @return del tipo java.util.List
      * &lt;es.seas.feedback.cliente.manager.model.Usuario&gt;.
-     * 
-     * <p>En caso de que no se encontre ningún usuario con esta búsqueda,
-     * se retornará una lista vacia.</p>
+     *
+     * <p>
+     * En caso de que no se encontre ningún usuario con esta búsqueda, se
+     * retornará una lista vacia.</p>
      */
     @Override
     public List<Usuario> cumpleañerosDelMes(Month mes) {
@@ -1274,4 +1287,56 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
         return lista;
     }
 
+    private void createTables() {
+        String[] tablas = new String[3];
+        tablas[0] = "CREATE TABLE IF NOT EXISTS "
+                + "usuarios(id BIGINT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+                + " nif VARCHAR(100) NOT NULL UNIQUE, nombre VARCHAR(100), "
+                + "primerApellido VARCHAR(100), segundoApellido VARCHAR(100), "
+                + "fechaNacimiento DATE, fechaPrimeraAlta DATE, "
+                + "fechaUltimaBaja DATE, activo BIT(1), provincia VARCHAR(100),"
+                + "localidade VARCHAR(100), direccion VARCHAR(100),"
+                + " numero VARCHAR(10), cp VARCHAR(100), nota VARCHAR(100), "
+                + "contraseña VARCHAR(255), controle INT(2))";
+        
+        tablas[1] = "CREATE TABLE IF NOT EXISTS "
+                + "contactos(id BIGINT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+                + "descripcion VARCHAR(100), contacto VARCHAR(100))";
+        
+        tablas[2] = "CREATE TABLE IF NOT EXISTS "
+                + "usuarios_contactos(usuarios_id BIGINT(5) NOT NULL,"
+                + " contactos_id BIGINT(9) NOT NULL, "
+                + "CONSTRAINT pk_usuarios_contactos "
+                + "PRIMARY KEY(usuarios_id,contactos_id))";
+        try {
+            con = getConnection();
+            con.setAutoCommit(false);
+            for (String sqlCreateTable : tablas) {
+                stm = con.prepareStatement(sqlCreateTable);
+                stm.execute();
+            }
+            stm.close();
+            con.commit();
+        } catch (SQLException ex) {
+            LOG.error("SQLException in the method createTables 1ª of 3 "
+                    + "SQLException catcher ", ex);
+            try {
+                if (con != null) {
+                    con.rollback();
+                }
+            } catch (SQLException exx) {
+                LOG.error("SQLException in the method createTables 2ª "
+                        + "of 3 SQLException catcher ", exx);
+            }
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                LOG.error("SQLException in the method createTables 3ª "
+                        + "of 3 SQLException catcher ", ex);
+            }
+        }
+    }
 }

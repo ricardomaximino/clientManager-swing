@@ -9,6 +9,7 @@ import es.seas.feedback.cliente.manager.model.Localidade;
 import es.seas.feedback.cliente.manager.model.Provincia;
 import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAO;
 import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAOImpl;
+import es.seas.feedback.cliente.manager.model.dao.jdbc.ProvinciaJDBCDAO;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +30,8 @@ public class LectorEscritor {
          if(provinciasAchivo != null) provinciasFile = provinciasAchivo;
          if(localidadesArchivo != null)localidadesFile = localidadesArchivo;
          
-        ProvinciaDAO dao = new ProvinciaDAOImpl();      
+        ProvinciaDAO dao = new ProvinciaJDBCDAO();      
+        //ProvinciaDAO dao = new ProvinciaDAOImpl();
         
             System.out.println("Leyendo y registrando provincias...");
             try {
