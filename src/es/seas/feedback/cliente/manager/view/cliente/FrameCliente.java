@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.seas.feedback.cliente.manager.view.cliente;
 
-import es.seas.feedback.cliente.manager.control.ClienteControl;
+import es.seas.feedback.cliente.manager.control.PersonaControl;
 import es.seas.feedback.cliente.manager.model.Cliente;
 import es.seas.feedback.cliente.manager.model.Contacto;
 import es.seas.feedback.cliente.manager.model.Direccion;
@@ -19,25 +14,27 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author Ricardo
+ * Esta clase es la principal en la camada visual responsable del GUI del
+ * referente al cliente.
+ * @author Ricardo Maximino
  */
 public class FrameCliente extends javax.swing.JInternalFrame {
 
     public static final String TELEFONO = "Telefono";
     public static final String EMAIL = "E-mail";
     private final String[] mesNombres;
-    private ClienteControl control;
+    private PersonaControl control;
     private Map<String, Provincia> provincias;
     private Cliente cliente;
-    private PersonaUtilidades personaUtilidades;
-    private ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+    private final PersonaUtilidades personaUtilidades;
+    private final ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
 
     /**
-     * Creates new form Cliente
-     *
-     * @param prov
-     * @param personaUtilidades
+     * Este constructor con argumentos, ademas que iniciar lo componentes 
+     * visuales también configura toda las demas variables.
+     * @param prov del tipo java.util.Map&lt;String,Provincia&gt;.
+     * @param personaUtilidades del tipo 
+     * es.seas.feedback.cliente.manager.view.PersonaUtilidades.
      */
     public FrameCliente(Map<String, Provincia> prov, PersonaUtilidades personaUtilidades) {
         initComponents();
@@ -47,26 +44,52 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         initCombos();
     }
 
-    public ClienteControl getControl() {
+    /**
+     * Este metodo retorna el valor de la variable global control.
+     * @return del tipo es.seas.feedback.cliente.manager.control.ClienteControl
+     */
+    public PersonaControl getControl() {
         return control;
     }
 
+    /**
+     * Este metodo retorna el valor de la variable global cliente.
+     * @return del tipo es.seas.feedback.cliente.manager.model.Cliente.
+     */
     public Cliente getKeyCliente() {
         return cliente;
     }
 
-    public void setControl(ClienteControl control) {
+    /**
+     * Este metodo configura la variable global control.
+     * @param control del tipo 
+     * es.seas.feedback.cliente.manager.control.PersonaControl.
+     */
+    public void setControl(PersonaControl control) {
         this.control = control;
     }
 
+    /**
+     * Este metodo retorna el valor la variable global provincias.
+     * @return del tipo java.util.Map&lt;String,Provincia&gt;.
+     */
     public Map<String, Provincia> getProvincias() {
         return provincias;
     }
 
+    /**
+     * Este metodo configura la variable global provincia.
+     * @param prov del tipo java.util.Map&lt;String,Provincia&gt;.
+     */
     public void setProvincias(Map<String, Provincia> prov) {
         this.provincias = prov;
     }
 
+    /**
+     * Este metodo configura la variable global cliente y ademas configura los
+     * componentes visuales con información del cliente.
+     * @param clien del tipo es.seas.feedback.cliente.manager.model.Cliente.
+     */
     public void setCliente(Cliente clien) {
         if (clien != null) {
             this.cliente = clien;
@@ -104,18 +127,22 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         }
     }
 
+    /**
+     * Este metodo retorna un cliente con información aportada por el usuario.
+     * @return  del tipo es.seas.feedback.cliente.manager.model.Cliente.
+     */
     public Cliente getCliente() throws DateTimeException {
         Cliente newCliente = new Cliente();
         Direccion direccion = new Direccion();
         Contacto telefono = new Contacto(TELEFONO, txtTelefono.getText());
         Contacto email = new Contacto(EMAIL, txtEmail.getText());
         //nuevo
-        if(cliente != null && cliente.getContactos().size()>1){
-            for(Contacto c : cliente.getContactos()){
-                if(c.getDescripcion().toUpperCase().equals(TELEFONO.toUpperCase())){
+        if (cliente != null && cliente.getContactos().size() > 1) {
+            for (Contacto c : cliente.getContactos()) {
+                if (c.getDescripcion().toUpperCase().equals(TELEFONO.toUpperCase())) {
                     telefono.setId(c.getId());
                 }
-                if(c.getDescripcion().toUpperCase().equals(EMAIL.toUpperCase())){
+                if (c.getDescripcion().toUpperCase().equals(EMAIL.toUpperCase())) {
                     email.setId(c.getId());
                 }
             }
@@ -124,22 +151,24 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         newCliente.setDirecion(direccion);
         newCliente.getContactos().add(telefono);
         newCliente.getContactos().add(email);
-        
+
         //nuevo
-        if(cliente != null) newCliente.setId(cliente.getId());
-        
+        if (cliente != null) {
+            newCliente.setId(cliente.getId());
+        }
+
         newCliente.setNif(txtNIF.getText());
         newCliente.setNombre(txtNombre.getText());
         newCliente.setPrimerApellido(txtPrimerApellido.getText());
         newCliente.setSegundoApellido(txtSegundoApellido.getText());
 
         newCliente.setFechaNacimiento(LocalDate.of(Integer.parseInt(cmbAño.getSelectedItem().toString()), cmbMes.getSelectedIndex() + 1, Integer.parseInt(cmbDia.getSelectedItem().toString())));
-        
+
         //nuevo
-        if(cliente != null){
-            newCliente.setFechaPrimeraAlta(cliente.getFechaPrimeraAlta()== null? LocalDate.now() : cliente.getFechaPrimeraAlta());
-            newCliente.setFechaUltimaBaja(cliente.getFechaUltimaBaja() == null? null : cliente.getFechaUltimaBaja());
-        }else{
+        if (cliente != null) {
+            newCliente.setFechaPrimeraAlta(cliente.getFechaPrimeraAlta() == null ? LocalDate.now() : cliente.getFechaPrimeraAlta());
+            newCliente.setFechaUltimaBaja(cliente.getFechaUltimaBaja() == null ? null : cliente.getFechaUltimaBaja());
+        } else {
             newCliente.setFechaPrimeraAlta(LocalDate.now());
             newCliente.setFechaUltimaBaja(null);
         }
@@ -156,8 +185,25 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         return newCliente;
     }
 
+    /**
+     * Este metodo configura la variable visible del componete btnBorrarCliente.
+     * @param visible del tipo boolean.
+     * <p>En la GUI hay un botón para borrar clientes que no debe estar visible
+     * siempre que se exiba este frame.</p>
+     * <p>Por ejemplo cuando se vá añadir un nuevo cliente.</p>
+     */
     public void borrarEsVisible(boolean visible) {
         btnBorrarCliente.setVisible(visible);
+    }
+
+    /**
+     * Este metodo fue Override para que al llamar el metodo dispose se elimine
+     * la referencia deste frame guardada en el controle.
+     */
+    @Override
+    public void dispose() {
+        control.closeFrame(this);
+        super.dispose();
     }
 
     private void initCombos() {
@@ -170,6 +216,36 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         personaUtilidades.setComboLocalidade(provincias, prov, "Santa Pola", cmbLocalidade);
     }
 
+    private String msgClienteGuardado(Cliente cliente) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(view.getString("message_Registry"));
+        sb.append(cliente.getNombre());
+        sb.append(" ");
+        sb.append(cliente.getPrimerApellido());
+        sb.append(" ");
+        sb.append(cliente.getSegundoApellido());
+        sb.append(" ");
+        sb.append(view.getString("message_was_saved_successfully"));
+        return sb.toString();
+    }
+
+    private String msgErrorDeFecha() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cmbDia.getSelectedItem());
+        sb.append(" ");
+        sb.append(view.getString("message_of"));
+        sb.append(" ");
+        sb.append(cmbMes.getSelectedItem());
+        sb.append(" ");
+        sb.append(view.getString("message_of"));
+        sb.append(" ");
+        sb.append(cmbAño.getSelectedItem());
+        sb.append(", ");
+        sb.append(view.getString("message_is_not_a_valid_date"));
+        sb.append(".");
+        return sb.toString();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -625,11 +701,6 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    @Override
-    public void dispose(){
-        control.closeFrame(this);
-        super.dispose();     
-    }
     private void txtNombreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyPressed
         if (evt.getKeyCode() == 10) {
             txtPrimerApellido.requestFocus();
@@ -724,7 +795,7 @@ public class FrameCliente extends javax.swing.JInternalFrame {
         try {
             Cliente cliente = getCliente();
             if (control.guardar(cliente)) {
-                JOptionPane.showMessageDialog(null, msgClienteGuardado(cliente));   
+                JOptionPane.showMessageDialog(null, msgClienteGuardado(cliente));
                 this.dispose();
             }
         } catch (DateTimeException ex) {
@@ -732,36 +803,6 @@ public class FrameCliente extends javax.swing.JInternalFrame {
             cmbDia.requestFocus();
         }
     }//GEN-LAST:event_btnAceptarActionPerformed
-
-    private String msgClienteGuardado(Cliente cliente) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(view.getString("message_Registry"));
-        sb.append(cliente.getNombre());
-        sb.append(" ");
-        sb.append(cliente.getPrimerApellido());
-        sb.append(" ");
-        sb.append(cliente.getSegundoApellido());
-        sb.append(" ");
-        sb.append(view.getString("message_was_saved_successfully"));
-        return sb.toString();
-    }
-
-    private String msgErrorDeFecha() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(cmbDia.getSelectedItem());
-        sb.append(" ");
-        sb.append(view.getString("message_of"));
-        sb.append(" ");
-        sb.append(cmbMes.getSelectedItem());
-        sb.append(" ");
-        sb.append(view.getString("message_of"));
-        sb.append(" ");
-        sb.append(cmbAño.getSelectedItem());
-        sb.append(", ");
-        sb.append(view.getString("message_is_not_a_valid_date"));
-        sb.append(".");
-        return sb.toString();
-    }
 
     private void cmbDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDiaActionPerformed
 

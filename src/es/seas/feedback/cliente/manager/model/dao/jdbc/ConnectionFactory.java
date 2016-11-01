@@ -1,35 +1,34 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.seas.feedback.cliente.manager.model.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
- *
- * @author Ricardo
+ * Esta clase es una fabrica de conecciones con la base de datos.
+ * @author Ricardo Maximino
+ * <p>Esta clase crea conecciones utilizando JDBC API.</p>
  */
-public class ConnectionFactory {
+public final class ConnectionFactory {
+    private static final Logger LOG = LoggerFactory.getLogger(ConnectionFactory.class);
     private static Connection conn = null;
     private static final String URL ="jdbc:mysql://localhost:3306/seas";
     private static final String USER="root";
     private static final String PASSWORD="Ricardo2";
     
+    /**
+     * Este metodo retorna una nueva conección con la base de datos.
+     * @return del tipo java.sql.Connection.
+     */
     public static Connection getConnection(){
         
         try {
             conn = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Connected");
         } catch (SQLException ex) {
-            Logger.getLogger(ConnectionFactory.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("No fue posible conectar a la base de datos",ex);
         }
         return conn;
     }

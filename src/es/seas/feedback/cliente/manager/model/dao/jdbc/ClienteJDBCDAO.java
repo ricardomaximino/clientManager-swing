@@ -587,7 +587,6 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                     Contacto contacto = new Contacto(rs.getString("descripcion"),
                             rs.getString("contacto"));
                     contacto.setId(rs.getLong("id"));
-                    System.out.println("Contacto id in PORNIF: " + contacto.getId());
                     cliente.getContactos().add(contacto);
                 }
             }

@@ -11,6 +11,7 @@ import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
  * Esta interfaz fue creada para desvincular los controles de la view.
  * @author Ricardo Maximino<br>
  * Para más informaciones de los metodo, ir a la documentación de alguna implementación.
+ * @param <T> del tipo Generics.
  * @see ClienteControl
  * @see UsuarioControl
  */

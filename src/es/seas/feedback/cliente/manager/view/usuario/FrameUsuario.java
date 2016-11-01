@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.seas.feedback.cliente.manager.view.usuario;
 
-import es.seas.feedback.cliente.manager.control.UsuarioControl;
+import es.seas.feedback.cliente.manager.control.PersonaControl;
 import es.seas.feedback.cliente.manager.model.Contacto;
 import es.seas.feedback.cliente.manager.model.Direccion;
 import es.seas.feedback.cliente.manager.model.Provincia;
@@ -25,25 +20,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author Ricardo
+ * Esta clase es la principal en la camada visual responsable del GUI del
+ * referente al usuario.
+ * @author Ricardo Maximino
  */
 public class FrameUsuario extends javax.swing.JInternalFrame {
     public static final Logger LOG = LoggerFactory.getLogger(FrameUsuario.class);
 
     public static final String TELEFONO = "Telefono";
     public static final String EMAIL = "E-mail";
-    private UsuarioControl control;
+    private PersonaControl control;
     private Map<String, Provincia> provincias;
     private Usuario usuario;
     private PersonaUtilidades personaUtilidades;
     private final ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
 
     /**
-     * Creates new form Cliente
-     *
-     * @param prov
-     * @param personaUtilidades
+     * Este constructor con argumentos, además que iniciar lo componentes 
+     * visuales también configura toda las demas variables.
+     * @param prov del tipo java.util.Map&lt;String,Provincia&gt;.
+     * @param personaUtilidades del tipo 
+     * es.seas.feedback.cliente.manager.view.PersonaUtilidades.
      */
     public FrameUsuario(Map<String, Provincia> prov, PersonaUtilidades personaUtilidades) {
         initComponents();
@@ -55,34 +52,52 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         sprPoderDeAcceso.repaint();
     }
 
-    public UsuarioControl getControl() {
+    /**
+     * Este metodo retorna el valor de la variable global control.
+     * @return del tipo es.seas.feedback.cliente.manager.control.ClienteControl
+     */
+    public PersonaControl getControl() {
         return control;
     }
 
+    /**
+     * Este metodo retorna el valor de la variable global cliente.
+     * @return del tipo es.seas.feedback.cliente.manager.model.Usuario.
+     */
     public Usuario getKeyUsuario() {
         return usuario;
     }
 
-    public void setControl(UsuarioControl control) {
+    /**
+     * Este metodo configura la variable global control.
+     * @param control del tipo 
+     * es.seas.feedback.cliente.manager.control.PersonaControl.
+     */
+    public void setControl(PersonaControl control) {
         this.control = control;
     }
 
+    /**
+     * Este metodo retorna el valor la variable global provincias.
+     * @return del tipo java.util.Map&lt;String,Provincia&gt;.
+     */
     public Map<String, Provincia> getProvincias() {
         return provincias;
     }
 
+    /**
+     * Este metodo configura la variable global provincia.
+     * @param prov del tipo java.util.Map&lt;String,Provincia&gt;.
+     */
     public void setProvincias(Map<String, Provincia> prov) {
         this.provincias = prov;
     }
 
-    public PersonaUtilidades getPersonaUtilidades() {
-        return personaUtilidades;
-    }
-
-    public void setPersonaUtilidades(PersonaUtilidades personaUtilidades) {
-        this.personaUtilidades = personaUtilidades;
-    }
-
+    /**
+     * Este metodo configura la variable global usuario y ademas configura los
+     * componentes visuales con información del usuario.
+     * @param usu del tipo es.seas.feedback.cliente.manager.model.Usuario.
+     */
     public void setUsuario(Usuario usu) {
         if (usu != null) {
             this.usuario = usu;
@@ -120,6 +135,16 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         }
     }
 
+    /**
+     * Este metodo retorna un usuario con información aportada por el usuario.
+     * @return  del tipo es.seas.feedback.cliente.manager.model.Usuario.
+     * @throws javax.xml.bind.ValidationException problemas con la contraseña.
+     * @throws java.time.DateTimeException problemas con la fecha de nacimiento.
+     * <p>Este metodo puede lanzar una ValidationException cuando el valor
+     * del JTextFiel contraseña no sea igual JTextFiel repita contraseña.</p>
+     * <p>Este metodo puede lanzar una DateTimeException cuando el usuario
+     * seleciona una fecha que no exista, como por ejemplo 31 de Febrero.</p>
+     */
     public Usuario getUsuario() throws DateTimeException, ValidationException {
         Usuario newUsuario = new Usuario();
         Direccion direccion = new Direccion();
@@ -184,23 +209,48 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         return newUsuario;
     }
 
+    /**
+     * Este metodo configura la variable visible del componete btnBorrarUsuario.
+     * @param visible del tipo boolean.
+     * <p>En la GUI hay un botón para borrar usuarios que no debe estar visible
+     * siempre que se exiba este frame.</p>
+     * <p>Por ejemplo cuando se vá añadir un nuevo usuario.</p>
+     */
     public void borrarEsVisible(boolean visible) {
-        btnBorrarCliente.setVisible(visible);
+        btnBorrarUsuario.setVisible(visible);
     }
 
-    public JTextField getTxtRepiteContraseña() {
-        return txtRepitaContraseña;
-    }
-
-    public JSpinner getSprPoderDeAcceso() {
-        return sprPoderDeAcceso;
-    }
-
+    /**
+     * Este metodo fue Override para que al llamar el metodo dispose se elimine
+     * la referencia deste frame guardada en el controle.
+     */
     @Override
     public void dispose() {
         control.closeFrame(this);
         super.dispose();
     }
+    
+    /**
+     * Este metodo retorna el valor de la variable global txtRepitaContraseña.
+     * @return del tipo javax.swing.JTextField.
+     * <p>Este metodo es necesario para controlar cuando el JTextField vaya
+     * estar enable = true o false</p>
+     */
+    public JTextField getTxtRepiteContraseña() {
+        return txtRepitaContraseña;
+    }
+
+    /**
+     * Este metodo retorna el valor de la variable global sprPoderDeAcceso.
+     * @return del tipo javax.swing.JSpinner.
+     * <p>Este metodo es necesario para controlar cuando el JSpinner vaya
+     * estar enable = true o false</p>
+     */
+    public JSpinner getSprPoderDeAcceso() {
+        return sprPoderDeAcceso;
+    }
+
+    
 
     private void initCombos() {
         personaUtilidades.setComboDia(cmbDia);
@@ -212,6 +262,36 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         personaUtilidades.setComboLocalidade(provincias, prov, "Santa Pola", cmbLocalidade);
     }
 
+    private String msgUsuarioGuardado(Usuario usuario) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(view.getString("message_Registry"));
+        sb.append(usuario.getNombre());
+        sb.append(" ");
+        sb.append(usuario.getPrimerApellido());
+        sb.append(" ");
+        sb.append(usuario.getSegundoApellido());
+        sb.append(" ");
+        sb.append(view.getString("message_was_saved_successfully"));
+        return sb.toString();
+    }
+
+    private String msgErrorDeFecha() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cmbDia.getSelectedItem());
+        sb.append(" ");
+        sb.append(view.getString("message_of"));
+        sb.append(" ");
+        sb.append(cmbMes.getSelectedItem());
+        sb.append(" ");
+        sb.append(view.getString("message_of"));
+        sb.append(" ");
+        sb.append(cmbAño.getSelectedItem());
+        sb.append(", ");
+        sb.append(view.getString("message_is_not_a_valid_date"));
+        sb.append(".");
+        return sb.toString();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -255,7 +335,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         txtCP = new javax.swing.JTextField();
         btnAceptar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-        btnBorrarCliente = new javax.swing.JButton();
+        btnBorrarUsuario = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         txtContraseña = new javax.swing.JPasswordField();
@@ -634,11 +714,11 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
             }
         });
 
-        btnBorrarCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnBorrarCliente.setText(bundle.getString("button_Delete")); // NOI18N
-        btnBorrarCliente.addActionListener(new java.awt.event.ActionListener() {
+        btnBorrarUsuario.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnBorrarUsuario.setText(bundle.getString("button_Delete")); // NOI18N
+        btnBorrarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBorrarClienteActionPerformed(evt);
+                btnBorrarUsuarioActionPerformed(evt);
             }
         });
 
@@ -737,7 +817,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnBorrarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnBorrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAceptar)
                 .addGap(18, 18, 18)
@@ -758,7 +838,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAceptar)
                     .addComponent(btnCancelar)
-                    .addComponent(btnBorrarCliente))
+                    .addComponent(btnBorrarUsuario))
                 .addContainerGap())
         );
 
@@ -870,35 +950,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
-    private String msgUsuarioGuardado(Usuario usuario) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(view.getString("message_Registry"));
-        sb.append(usuario.getNombre());
-        sb.append(" ");
-        sb.append(usuario.getPrimerApellido());
-        sb.append(" ");
-        sb.append(usuario.getSegundoApellido());
-        sb.append(" ");
-        sb.append(view.getString("message_was_saved_successfully"));
-        return sb.toString();
-    }
-
-    private String msgErrorDeFecha() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(cmbDia.getSelectedItem());
-        sb.append(" ");
-        sb.append(view.getString("message_of"));
-        sb.append(" ");
-        sb.append(cmbMes.getSelectedItem());
-        sb.append(" ");
-        sb.append(view.getString("message_of"));
-        sb.append(" ");
-        sb.append(cmbAño.getSelectedItem());
-        sb.append(", ");
-        sb.append(view.getString("message_is_not_a_valid_date"));
-        sb.append(".");
-        return sb.toString();
-    }
+    
 
     private void cmbDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDiaActionPerformed
 
@@ -920,7 +972,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnBorrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarClienteActionPerformed
+    private void btnBorrarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarUsuarioActionPerformed
         int respuesta = JOptionPane.showConfirmDialog(this, view.getString("message_Are_you_sure_want_delete_this_registry"));
         try {
             if (respuesta == 0) {
@@ -942,7 +994,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
             }
 
         }
-    }//GEN-LAST:event_btnBorrarClienteActionPerformed
+    }//GEN-LAST:event_btnBorrarUsuarioActionPerformed
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
         control.closeFrame(this);
@@ -1004,7 +1056,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
-    private javax.swing.JButton btnBorrarCliente;
+    private javax.swing.JButton btnBorrarUsuario;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JCheckBox chkActivo;
     private javax.swing.JComboBox<String> cmbAño;

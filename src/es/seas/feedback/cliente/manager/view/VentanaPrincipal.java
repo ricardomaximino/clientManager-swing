@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.seas.feedback.cliente.manager.view;
 
 import javax.swing.JDesktopPane;
@@ -12,82 +7,106 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- *
- * @author Ricardo
+ * Esta clase es el frame principal de la aplicación.
+ * @author Ricardo Maximino
  */
 public class VentanaPrincipal extends javax.swing.JFrame implements Controlable {
+
     private int x = 0;
     private int y = 0;
     private PersonaControl clienteControl;
     private PersonaControl usuarioControl;
 
     /**
-     * Creates new form VentanaPrincipal
+     * Este es el constructor sin argumentos, que simplemente inicializa los 
+     * componentes de JFrame.
      */
     public VentanaPrincipal() {
         initComponents();
     }
-    public VentanaPrincipal(PersonaControl clienteController){
+
+    /**
+     * Este es el constructor con argumentos, el cual ademas de inicializar los
+     * componentes también configura los controles de cliente y usuarios.
+     * @param clienteController del tipo 
+     * es.seas.feedback.cliente.manager.control.PersonaControl.
+     * @param usuarioControl del tipo 
+     * es.seas.feedback.cliente.manager.control.PersonaControl.
+     */
+    public VentanaPrincipal(PersonaControl clienteController,PersonaControl usuarioControl) {
         this();
-        this.clienteControl = clienteController;       
+        this.clienteControl = clienteController;
+        this.usuarioControl = usuarioControl;
     }
+
+    /**
+     * Este metodo retorna el valor de la variable global desktopPane.
+     * @return del tipo javax.swing.JDesktopPane.
+     */
     @Override
     public JDesktopPane getDesktopPane() {
         return desktopPane;
     }
 
-    public void setDesktopPane(JDesktopPane desktopPane) {
-        this.desktopPane = desktopPane;
-    }
-    
-    private int getPositionX(){
-        x += 30;
-        if(desktopPane.getWidth()-800<x){
-            x= 0;
-        }
-        return x;
-    }
-    private int getPositionY(){
-        y += 30;
-        if(this.desktopPane.getHeight()-120< y){
-            y=0;
-        }
-        return y;
-    }
-    private void restartXY(){
-        x=y=0;
-    }
+    /**
+     * Este metodo exibe el JInternalFrame pasado como parametro.
+     * @param frame javax.swing.JInternalFrame.
+     */
     @Override
-    public void showInternalFrame(JInternalFrame frame){    
-        if(desktopPane.getAllFrames().length==0) restartXY();
-        
+    public void showInternalFrame(JInternalFrame frame) {
+        if (desktopPane.getAllFrames().length == 0) {
+            restartXY();
+        }
+
         frame.setClosable(true);
         frame.setIconifiable(true);
         frame.setResizable(false);
-        
+
         desktopPane.add(frame);
         frame.setLocation(getPositionX(), getPositionY());
         frame.setVisible(true);
     }
-    
+
+    /**
+     * Este metodo configura la variable global clienteControl.
+     * @param control del tipo es.seas.feedback.cliente.manager.control.PersonaControl.
+     */
     @Override
-    public void setClienteControl(PersonaControl control){
+    public void setClienteControl(PersonaControl control) {
         this.clienteControl = control;
     }
-    public PersonaControl getClienteControl(){
-        return clienteControl;
-    }
 
+    /**
+     * Este metodo configura la variable global usuarioControl.
+     * @param control del tipo es.seas.feedback.cliente.manager.control.PersonaControl.
+     */
     @Override
     public void setUsuarioControl(PersonaControl control) {
         this.usuarioControl = control;
     }
-    public PersonaControl getUsuarioControl(){
-        return usuarioControl;
+
+    private int getPositionX() {
+        x += 30;
+        if (desktopPane.getWidth() - 800 < x) {
+            x = 0;
+        }
+        return x;
     }
+
+    private int getPositionY() {
+        y += 30;
+        if (this.desktopPane.getHeight() - 120 < y) {
+            y = 0;
+        }
+        return y;
+    }
+
+    private void restartXY() {
+        x = y = 0;
+    }    
     
-    private void reset(){
-        for(JInternalFrame f: desktopPane.getAllFrames()){
+    private void reset() {
+        for (JInternalFrame f : desktopPane.getAllFrames()) {
             f.dispose();
         }
         restartXY();
@@ -117,7 +136,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
         menuItemPortugues.setText(view.getString("menuItem_Portugues"));
         //Configuraciones
         menuConfiguracion.setText(view.getString("menu_Settings"));
-       
+
     }
 
     /**
@@ -301,29 +320,28 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
         clienteControl.crearFrameAñadir();
     }//GEN-LAST:event_menuItemNuevoClienteActionPerformed
 
-    
     private void menuItemBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemBuscarClienteActionPerformed
         clienteControl.crearFrameBuscar();
     }//GEN-LAST:event_menuItemBuscarClienteActionPerformed
 
     private void menuItemCascadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCascadaActionPerformed
         restartXY();
-        for(JInternalFrame frame : desktopPane.getAllFrames()){
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
             frame.setLocation(getPositionX(), getPositionY());
         }
     }//GEN-LAST:event_menuItemCascadaActionPerformed
 
     private void menuItemCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCerrarActionPerformed
-       JInternalFrame frame = desktopPane.getSelectedFrame();
-       if(frame != null){
-           clienteControl.closeFrame(frame);
-           usuarioControl.closeFrame(frame);
-           frame.dispose();
-       }
+        JInternalFrame frame = desktopPane.getSelectedFrame();
+        if (frame != null) {
+            clienteControl.closeFrame(frame);
+            usuarioControl.closeFrame(frame);
+            frame.dispose();
+        }
     }//GEN-LAST:event_menuItemCerrarActionPerformed
 
     private void menuItemCerrarTodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCerrarTodoActionPerformed
-        for(JInternalFrame frame : desktopPane.getAllFrames()){
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
             clienteControl.closeFrame(frame);
             usuarioControl.closeFrame(frame);
             frame.dispose();
@@ -347,7 +365,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
     }//GEN-LAST:event_menuItemNuevoUsuarioActionPerformed
 
     private void menuUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuUsuarioActionPerformed
-        
+
     }//GEN-LAST:event_menuUsuarioActionPerformed
 
     private void menuItemCastellanoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCastellanoActionPerformed

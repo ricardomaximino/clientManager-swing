@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.seas.feedback.cliente.manager.view;
 
 import es.seas.feedback.cliente.manager.control.PersonaControl;
@@ -10,35 +5,60 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 /**
- *
- * @author Ricardo
+ * Esta clase es una tabla para persona.
+ * @author Ricardo Maximino
+ * <p>Este clase extende JInternalFrame y dentro de este JInternalFrame
+ * hay solamente un componente visual(JTable).</p>
  */
 public class ListaPersona extends javax.swing.JInternalFrame {
     private PersonaControl control;
 
     /**
-     * Creates new form ListaCliente
+     * Este es el constructor sin argumentos, lo cual solamente inicia los 
+     * componentes.
      */
     public ListaPersona() {
         initComponents();
     }
+    /**
+     * Este constructor ademas que iniciar lo componentes configura el model
+     * de la JTable.
+     * @param model del tipo javax.swing.table.TableModel.
+     */
     public ListaPersona(TableModel model){
         this();
         tabla.setModel(model);
     }
     
+    /**
+     * Este metodo retorna el valor de la variable global tabla.
+     * @return del tipo javax.swing.JTable.
+     */
     public JTable getTabla() {
         return tabla;
     }
 
+    /**
+     * Este metodo configura la variable global tabla.
+     * @param tabla del tipo javax.swing.JTable.
+     */
     public void setTabla(JTable tabla) {
         this.tabla = tabla;
     }
     
+    /**
+     * Este metodo retorna el valor de la variable global control.
+     * @return del tipo es.seas.feedback.cliente.manager.control.PersonaControl.
+     */
     public PersonaControl getControl() {
         return control;
     }
 
+    /**
+     * Este metodo configura la variable global control.
+     * @param control del tipo 
+     * es.seas.feedback.cliente.manager.control.PersonaControl.
+     */
     public void setControl(PersonaControl control) {
         this.control = control;
     }

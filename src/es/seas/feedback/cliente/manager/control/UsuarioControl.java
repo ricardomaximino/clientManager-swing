@@ -1,7 +1,8 @@
 package es.seas.feedback.cliente.manager.control;
 
+import es.seas.feedback.cliente.manager.model.Persona;
 import es.seas.feedback.cliente.manager.model.Provincia;
-import es.seas.feedback.cliente.manager.view.usuario.TableModelUsuario;
+import es.seas.feedback.cliente.manager.view.TableModelPersona;
 import es.seas.feedback.cliente.manager.model.Usuario;
 import es.seas.feedback.cliente.manager.view.Controlable;
 import java.time.Month;
@@ -15,9 +16,10 @@ import java.time.format.DateTimeFormatter;
 import es.seas.feedback.cliente.manager.model.service.ServicioPersona;
 import es.seas.feedback.cliente.manager.view.ListaPersona;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
-import es.seas.feedback.cliente.manager.view.usuario.BuscarUsuario;
+import es.seas.feedback.cliente.manager.view.BuscarPersona;
 import es.seas.feedback.cliente.manager.view.usuario.FrameUsuario;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -322,7 +324,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
      */
     @Override
     public void crearFrameBuscar() {
-        BuscarUsuario buscarUsuario = new BuscarUsuario(null, true, personaUtilidades);
+        BuscarPersona buscarUsuario = new BuscarPersona(null, true, personaUtilidades,this);
         buscarUsuario.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("../view/icon.png")));
         buscarUsuario.setControl(this);
         buscarUsuario.setLocation(60, 60);
@@ -420,7 +422,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
      * y pasa la referencia de la clase ListaPersona que ha sido creada.
      */
     private void crearFrameListaUsuario(List<Usuario> list, String titulo) {
-        ListaPersona lista = new ListaPersona(new TableModelUsuario(list, personaUtilidades.getTitulosTablasDePersonas()));
+        ListaPersona lista = new ListaPersona(new TableModelPersona(conversor(list), personaUtilidades.getTitulosTablasDePersonas()));
         lista.setTitle(titulo + " - " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)+" - "+ list.size());
         lista.getTabla().setColumnModel(personaUtilidades.configurarAnchoDeLasColumnas(lista.getTabla().getColumnModel()));
         lista.setControl(this);
@@ -458,5 +460,15 @@ public class UsuarioControl implements PersonaControl<Usuario> {
         frame.getTxtRepiteContraseña().setEnabled(datosDeAcceso);
         frame.getSprPoderDeAcceso().setEnabled(datosDeAcceso);
         return frame;
+    }
+    
+    private List<Persona> conversor(List<Usuario> list){
+        List<Persona> resultado = new ArrayList<>();
+        Persona persona;
+        for(Usuario usu : list){
+            persona = usu;
+            resultado.add(persona);
+        }
+        return resultado;
     }
 }

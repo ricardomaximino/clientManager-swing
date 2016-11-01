@@ -516,7 +516,6 @@ public class UsuarioJDBCDAO implements PersonaDAO<Usuario> {
                     Contacto contacto = new Contacto(rsc.getString("descripcion"),
                             rsc.getString("contacto"));
                     contacto.setId(rsc.getLong("id"));
-                    System.out.println("contacto id na lista " + contacto.getId());
                     usuario.getContactos().add(contacto);
                 }
                 lista.add(usuario);

@@ -1,10 +1,11 @@
 package es.seas.feedback.cliente.manager.control;
 
 import es.seas.feedback.cliente.manager.model.Cliente;
+import es.seas.feedback.cliente.manager.model.Persona;
 import es.seas.feedback.cliente.manager.model.Provincia;
-import es.seas.feedback.cliente.manager.view.cliente.TableModelCliente;
+import es.seas.feedback.cliente.manager.view.TableModelPersona;
 import es.seas.feedback.cliente.manager.view.Controlable;
-import es.seas.feedback.cliente.manager.view.cliente.BuscarCliente;
+import es.seas.feedback.cliente.manager.view.BuscarPersona;
 import es.seas.feedback.cliente.manager.view.cliente.FrameCliente;
 import java.time.Month;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import es.seas.feedback.cliente.manager.model.service.ServicioPersona;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
 import es.seas.feedback.cliente.manager.view.ListaPersona;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -323,7 +325,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
      */
     @Override
     public void crearFrameBuscar() {
-        BuscarCliente buscarCliente = new BuscarCliente(null, true, personaUtilidades);
+        BuscarPersona buscarCliente = new BuscarPersona(null, true, personaUtilidades,this);
         buscarCliente.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("../view/icon.png")));
         buscarCliente.setControl(this);
         buscarCliente.setLocation(60, 60);
@@ -422,7 +424,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
      * y pasa la referencia de la clase ListaPersona que ha sido creada.
      */
     private void crearFrameListaCliente(List<Cliente> list, String titulo) {
-        ListaPersona lista = new ListaPersona(new TableModelCliente(list, personaUtilidades.getTitulosTablasDePersonas()));
+        ListaPersona lista = new ListaPersona(new TableModelPersona(conversor(list), personaUtilidades.getTitulosTablasDePersonas()));
         lista.setTitle(titulo + " - " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME) + " - " + list.size());
         lista.getTabla().setColumnModel(personaUtilidades.configurarAnchoDeLasColumnas(lista.getTabla().getColumnModel()));
         lista.setControl(this);
@@ -452,6 +454,15 @@ public class ClienteControl implements PersonaControl<Cliente> {
         frame.borrarEsVisible(borrarVisible);
         frame.setCliente(cliente);
         return frame;
+    }
+    private List<Persona> conversor(List<Cliente> list){
+        List<Persona> resultado = new ArrayList<>();
+        Persona persona;
+        for(Cliente cli : list){
+            persona = cli;
+            resultado.add(persona);
+        }
+        return resultado;
     }
    
 }
