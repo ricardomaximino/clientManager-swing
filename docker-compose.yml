@@ -1,0 +1,14 @@
+version: '3'
+
+services: 
+  mysql-db:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: client_manager
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    command: --explicit_defaults_for_timestamp
+    container_name: mysql
+    ports:
+      - 3306:3306
