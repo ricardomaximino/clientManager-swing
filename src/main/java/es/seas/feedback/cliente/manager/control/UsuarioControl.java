@@ -189,11 +189,9 @@ public class UsuarioControl implements PersonaControl<Usuario> {
     @Override
     public boolean guardar(Usuario usuario) {
         if (servicio.buscarRegistroPorNIF(usuario.getNif()) != null) {
-            servicio.atualizarRegistro(usuario);
-            return true;
+            return servicio.atualizarRegistro(usuario);
         } else {
-            servicio.anadirNuevoRegistro(usuario);
-            return true;
+            return servicio.anadirNuevoRegistro(usuario);
         }
     }
 

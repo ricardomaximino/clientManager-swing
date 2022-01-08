@@ -1224,14 +1224,14 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
 
         String[] tablas = new String[3];
         // CREATE TABLE IF NOT EXISTS clientes(id BIGINT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY, nif VARCHAR(100) NOT NULL UNIQUE, nombre VARCHAR(100), fechaNacimiento DATE, fechaPrimeraAlta DATE, fechaUltimaBaja DATE, activo BIT(1), provincia VARCHAR(100), localidade VARCHAR(100), direccion VARCHAR(100), numero VARCHAR(10), cp VARCHAR(100), nota VARCHAR(100));
-        tablas[0] = "CREATE TABLE IF NOT EXISTS"
-                + " clientes(id BIGINT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
-                + " nif VARCHAR(100) NOT NULL UNIQUE, nombre VARCHAR(100),"
-                + " primerApellido VARCHAR(100), segundoApellido VARCHAR(100),"
-                + " fechaNacimiento DATE, fechaPrimeraAlta DATE,"
-                + " fechaUltimaBaja DATE, activo BIT(1), provincia VARCHAR(100),"
-                + " localidade VARCHAR(100), direccion VARCHAR(100),"
-                + " numero VARCHAR(10), cp VARCHAR(100), nota VARCHAR(100))";
+        tablas[0] = "CREATE TABLE IF NOT EXISTS "
+                + "clientes(id BIGINT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+                + "nif VARCHAR(100) NOT NULL UNIQUE, nombre VARCHAR(100),"
+                + "primerApellido VARCHAR(100), segundoApellido VARCHAR(100),"
+                + "fechaNacimiento DATE, fechaPrimeraAlta DATE,"
+                + "fechaUltimaBaja DATE, activo BIT(1), provincia VARCHAR(100),"
+                + "localidade VARCHAR(100), direccion VARCHAR(100),"
+                + "numero VARCHAR(10), cp VARCHAR(100), nota VARCHAR(100))";
 
         // CREATE TABLE IF NOT EXISTS contactos(id BIGINT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,descripcion VARCHAR(100),contacto VARCHAR(100));
         tablas[1] = "CREATE TABLE IF NOT EXISTS contactos(id BIGINT(5) "
@@ -1239,9 +1239,11 @@ public class ClienteJDBCDAO implements PersonaDAO<Cliente> {
                 + "VARCHAR(100),contacto VARCHAR(100))";
         
         // CREATE TABLE IF NOT EXISTS clientes_contactos(clientes_id BIGINT(5) NOT NULL,contactos_id BIGINT(9) NOT NULL,CONSTRAINT pk_clientes_contactos PRIMARY KEY(clientes_id,contactos_id));
-        tablas[2] = "CREATE TABLE IF NOT EXISTS clientes_contactos(clientes_id "
-                + "BIGINT(5) NOT NULL,contactos_id BIGINT(9) NOT NULL,CONSTRAINT"
-                + " pk_clientes_contactos PRIMARY KEY(clientes_id,contactos_id))";
+        tablas[2] = "CREATE TABLE IF NOT EXISTS "
+                + "clientes_contactos(clientes_id BIGINT(5) NOT NULL,"
+                + " contactos_id BIGINT(9) NOT NULL, "
+                + "CONSTRAINT pk_clientes_contactos "
+                + "PRIMARY KEY(clientes_id,contactos_id))";
         try {
             con = getConnection();
             con.setAutoCommit(false);

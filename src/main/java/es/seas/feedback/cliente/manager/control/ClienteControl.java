@@ -189,8 +189,7 @@ public class ClienteControl implements PersonaControl<Cliente> {
     @Override
     public boolean guardar(Cliente cliente) {
         if (servicio.buscarRegistroPorNIF(cliente.getNif()) != null) {
-            servicio.atualizarRegistro(cliente);
-            return true;
+            return servicio.atualizarRegistro(cliente);
         } else {
             return servicio.anadirNuevoRegistro(cliente);
         }
