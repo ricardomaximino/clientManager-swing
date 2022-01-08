@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import es.seas.feedback.cliente.manager.model.Localidade;
 import es.seas.feedback.cliente.manager.model.Provincia;
-import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAO;
+import es.seas.feedback.cliente.manager.model.dao.hibernate.ProvinciaDAO;
 import es.seas.feedback.cliente.manager.model.dao.jdbc.ProvinciaJDBCDAO;
 
 /**

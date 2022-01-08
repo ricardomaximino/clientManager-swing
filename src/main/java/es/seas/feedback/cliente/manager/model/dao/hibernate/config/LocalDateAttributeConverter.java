@@ -1,4 +1,4 @@
-package es.seas.feedback.cliente.manager.model.dao.hibernate;
+package es.seas.feedback.cliente.manager.model.dao.hibernate.config;
 
 import java.sql.Date;
 import java.time.LocalDate;

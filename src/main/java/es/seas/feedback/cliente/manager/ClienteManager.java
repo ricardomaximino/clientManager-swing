@@ -2,8 +2,8 @@ package es.seas.feedback.cliente.manager;
 
 import es.seas.feedback.cliente.manager.control.ClienteControl;
 import es.seas.feedback.cliente.manager.model.Provincia;
-import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAO;
 import es.seas.feedback.cliente.manager.model.dao.datos.LectorEscritor;
+import es.seas.feedback.cliente.manager.model.dao.hibernate.ProvinciaDAO;
 import es.seas.feedback.cliente.manager.model.service.ServicioCliente;
 import es.seas.feedback.cliente.manager.view.VentanaPrincipal;
 import java.util.LinkedHashMap;

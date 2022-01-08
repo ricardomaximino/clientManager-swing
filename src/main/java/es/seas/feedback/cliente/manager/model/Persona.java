@@ -1,6 +1,5 @@
 package es.seas.feedback.cliente.manager.model;
 
-import es.seas.feedback.cliente.manager.model.dao.hibernate.LocalDateAttributeConverter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +15,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
+import es.seas.feedback.cliente.manager.model.dao.hibernate.config.LocalDateAttributeConverter;
 
 /**
  * Esta es una clase abstracta que representa una persona, esta clase es un POJO.

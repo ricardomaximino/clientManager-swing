@@ -1,4 +1,4 @@
-package es.seas.feedback.cliente.manager.model.dao;
+package es.seas.feedback.cliente.manager.model.dao.hibernate;
 
 import es.seas.feedback.cliente.manager.model.Provincia;
 import java.util.List;

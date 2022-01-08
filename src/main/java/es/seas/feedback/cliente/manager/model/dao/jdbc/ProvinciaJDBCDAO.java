@@ -3,7 +3,8 @@ package es.seas.feedback.cliente.manager.model.dao.jdbc;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import es.seas.feedback.cliente.manager.model.Localidade;
 import es.seas.feedback.cliente.manager.model.Provincia;
-import es.seas.feedback.cliente.manager.model.dao.ProvinciaDAO;
+import es.seas.feedback.cliente.manager.model.dao.hibernate.ProvinciaDAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

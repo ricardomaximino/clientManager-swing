@@ -1,8 +1,9 @@
-package es.seas.feedback.cliente.manager.model.dao;
+package es.seas.feedback.cliente.manager.model.dao.hibernate;
 
 import es.seas.feedback.cliente.manager.model.Localidade;
 import es.seas.feedback.cliente.manager.model.Provincia;
-import es.seas.feedback.cliente.manager.model.dao.hibernate.HibernateUtil;
+import es.seas.feedback.cliente.manager.model.dao.hibernate.config.HibernateUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
