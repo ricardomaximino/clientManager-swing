@@ -33,7 +33,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
     private Map<String, Provincia> provincias;
     private Usuario usuario;
     private PersonaUtilidades personaUtilidades;
-    private final ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+    private final ResourceBundle view = ResourceBundle.getBundle("view.messages.view");
 
     /**
      * Este constructor con argumentos, además que iniciar lo componentes 
@@ -364,7 +364,7 @@ public class FrameUsuario extends javax.swing.JInternalFrame {
             }
         });
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("es/seas/feedback/cliente/manager/view/internationalization/view"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("view.messages.view"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), bundle.getString("border_PersonalData"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N

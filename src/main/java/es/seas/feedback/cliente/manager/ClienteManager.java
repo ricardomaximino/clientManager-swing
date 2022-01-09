@@ -22,6 +22,7 @@ import es.seas.feedback.cliente.manager.model.service.ServicioUsuario;
 import es.seas.feedback.cliente.manager.view.Controlable;
 import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
 import java.awt.Toolkit;
+import java.io.File;
 
 /**
  * Esta es la class que lanza el la aplicacion.
@@ -146,7 +147,7 @@ public class ClienteManager {
         //UsuarioControl
 
         ((JFrame) principal).setExtendedState(JFrame.MAXIMIZED_BOTH);
-        ((JFrame) principal).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("view/icon.png")));
+        ((JFrame) principal).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/icon.png")));
         ((JFrame) principal).setVisible(true);
     }
 

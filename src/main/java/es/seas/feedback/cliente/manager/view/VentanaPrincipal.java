@@ -116,7 +116,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
         clienteControl.refresh();
         usuarioControl.refresh();
         clienteControl.getPersonaUtilidades().refresh();
-        ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+        ResourceBundle view = ResourceBundle.getBundle("view.messages.view");
         //Cliente
         menuCliente.setText(view.getString("menu_Client"));
         menuItemBuscarCliente.setText(view.getString("menuItem_SearchClient"));
@@ -188,7 +188,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements Controlable 
 
         getContentPane().add(desktopPane, java.awt.BorderLayout.CENTER);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("es/seas/feedback/cliente/manager/view/internationalization/view"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("view.messages.view"); // NOI18N
         menuCliente.setText(bundle.getString("menu_Client")); // NOI18N
 
         menuItemBuscarCliente.setText(bundle.getString("menuItem_SearchClient")); // NOI18N

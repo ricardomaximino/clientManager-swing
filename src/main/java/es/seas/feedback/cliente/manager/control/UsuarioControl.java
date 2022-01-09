@@ -19,6 +19,7 @@ import es.seas.feedback.cliente.manager.view.PersonaUtilidades;
 import es.seas.feedback.cliente.manager.view.BuscarPersona;
 import es.seas.feedback.cliente.manager.view.usuario.FrameUsuario;
 import java.awt.Toolkit;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -37,7 +38,7 @@ import java.util.ResourceBundle;
  */
 public class UsuarioControl implements PersonaControl<Usuario> {
 
-    private ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+    private ResourceBundle view = ResourceBundle.getBundle("view.messages.view");
     private ServicioPersona<Usuario> servicio;
     private Controlable principal;
     private Map<Usuario, JInternalFrame> frames;
@@ -76,7 +77,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
      */
     @Override
     public void refresh() {
-        view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+        view = ResourceBundle.getBundle("view.messages.view");
     }
 
     /**
@@ -321,7 +322,7 @@ public class UsuarioControl implements PersonaControl<Usuario> {
     @Override
     public void crearFrameBuscar() {
         BuscarPersona buscarUsuario = new BuscarPersona(null, true, personaUtilidades,this);
-        buscarUsuario.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("../view/icon.png")));
+        buscarUsuario.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/icon.png")));
         buscarUsuario.setControl(this);
         buscarUsuario.setLocation(60, 60);
         buscarUsuario.clear();

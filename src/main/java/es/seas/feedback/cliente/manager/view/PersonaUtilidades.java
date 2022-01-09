@@ -25,7 +25,7 @@ public class PersonaUtilidades {
     private String[] titulosTablaDePersonas;
     private String[] mesesDelAño;
     private String[] camposPersona;
-    private ResourceBundle view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view");
+    private ResourceBundle view = ResourceBundle.getBundle("view.messages.view");
     
     /**
      * Este constructor sin argumento simplemente configura las variables 
@@ -39,7 +39,7 @@ public class PersonaUtilidades {
      * Impresindible para el cambio de idiomas.
      */
     public void refresh(){
-        view = ResourceBundle.getBundle("es.seas.feedback.cliente.manager.view.internationalization.view",Locale.getDefault());
+        view = ResourceBundle.getBundle("view",Locale.getDefault());
         setArrays();
     }
 

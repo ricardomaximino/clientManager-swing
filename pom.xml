@@ -60,6 +60,16 @@
 				  </execution>
 				</executions>
 				<configuration>
+					<fileSets>
+						<fileSet>
+							<includes>
+								<include>*.properties</include>
+							</includes>
+							<excludes>
+								<exclude>NOTICE.txt</exclude>
+							</excludes>
+						</fileSet>
+					  </fileSets>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>

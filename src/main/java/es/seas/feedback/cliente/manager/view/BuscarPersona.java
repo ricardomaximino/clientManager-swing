@@ -68,7 +68,7 @@ public class BuscarPersona extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblCampo.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("es/seas/feedback/cliente/manager/view/internationalization/view"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("view.messages.view"); // NOI18N
         lblCampo.setText(bundle.getString("label_SearchFor")); // NOI18N
 
         txtBuscar.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
