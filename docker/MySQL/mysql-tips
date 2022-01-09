@@ -1,0 +1,22 @@
+# actual commands are those written below and docker mysql password is root
+mysqldump -u root -p client_manager > initdb.sql
+
+docker cp mysql:/initdb.sql .
+
+# Local
+mysql -u root -p
+
+mysqldump -u root -p databasename > database_export.sql
+
+mysqldump -u root -p --databases databasename > database_export.sql
+
+mysqldump -u root -p --databases databasename_one databasename_two > databases_export.sql
+
+mysqldump -u root -p databasename table_one talbe_two > database_export.sql
+
+
+
+# Remote
+mysql -u root -p -h host_IP -P 3306 --protocol=tcp
+
+mysqldump -u root -p -h host_IP -P 3306 --protocol=tcp databasename > database_export.sql
